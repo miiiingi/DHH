@@ -1,11 +1,11 @@
 package study.deliveryhanghae.global.handler;
 
-import com.example.demo.global.handler.exception.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
