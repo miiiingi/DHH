@@ -35,9 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/login-page")
-    public String loginPage(Model model) {
-        model.addAttribute("ErrorCode", null);
-        model.addAttribute("ErrorMessage", null);
+    public String loginPage() {
         return "login";
     }
 

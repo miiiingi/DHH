@@ -41,13 +41,6 @@
         Cookies.remove('Authorization', {path: '/'});
     });
 
-    const href = location.href;
-    const queryString = href.substring(href.indexOf("?") + 1)
-    // if (queryString === 'error') {
-    //     const errorDiv = document.getElementById('login-failed');
-    //     errorDiv.style.display = 'block';
-    //     errorDiv.innerText = "이메일 혹은 비밀번호가 틀렸습니다. 이메일 혹은 비밀번호를 확인하세요.";
-    // }
 
     const host = 'http://' + window.location.host;
     console.log(host)
