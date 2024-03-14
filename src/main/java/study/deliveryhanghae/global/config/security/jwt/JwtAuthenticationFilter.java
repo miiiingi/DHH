@@ -1,6 +1,7 @@
 package study.deliveryhanghae.global.config.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +18,6 @@ import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
 import java.io.IOException;
-import java.util.Map;
 
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -60,12 +60,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         log.info("로그인 실패");
-        response.setCharacterEncoding("UTF-8");
-        String responseDto = new ObjectMapper().writeValueAsString(Map.of("data", "BAD_REQUEST", "message", "로그인 실패", "resultCode", HttpServletResponse.SC_BAD_REQUEST));
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+        // 실패한 이유에 따라 적절한 에러 코드를 설정합니다.
+        String errorCode = ErrorCode.NOT_MATCH_EMAIL_PASSWORD.getCode();
+        String errorMessage = ErrorCode.NOT_MATCH_EMAIL_PASSWORD.getMessage();
+
+        // 에러 코드와 메시지를 JSON 형태로 응답합니다.
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 예시로 400 상태코드를 설정합니다.
         response.setContentType("application/json");
-        response.getWriter().write(responseDto);
-        response.getWriter().flush();
-        response.getWriter().close();
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"ErrorCode\":\"" + errorCode + "\", \"ErrorMessage\":\"" + errorMessage + "\"}");
     }
 }

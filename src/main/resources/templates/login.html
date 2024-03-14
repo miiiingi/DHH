@@ -17,19 +17,22 @@
     <div id="login-title">Log into Delivery Hanghae</div>
     <br>
     <div>
-        <div class="login-id-label">아이디</div>
+        <div class="login-id-label">이메일</div>
         <input type="text" name="email" id="email" class="login-input-box">
 
         <div class="login-id-label">비밀번호</div>
         <input type="password" name="password" id="password" class="login-input-box">
 
-        <button id="login-id-submit" onclick="onLogin()">로그인</button>
-    </div>
-    <div id="login-failed" style="display:none" class="alert alert-danger" role="alert">로그인에 실패하였습니다.</div>
+        <div>
 
-    <button id="login-id-btn" onclick="location.href='/signup'">
-        회원 가입하기
-    </button>
+        </div>
+        <button id="login-id-submit" onclick="onLogin()">로그인</button>
+        <button id="login-id-btn" onclick="location.href='/signup'">
+            회원 가입하기
+        </button>
+    </div>
+    <!-- 에러 메시지를 동적으로 생성할 div -->
+    <div id="login-failed" style="display:none; color:red;"></div>
 </div>
 </body>
 <script>
@@ -40,10 +43,11 @@
 
     const href = location.href;
     const queryString = href.substring(href.indexOf("?") + 1)
-    if (queryString === 'error') {
-        const errorDiv = document.getElementById('login-failed');
-        errorDiv.style.display = 'block';
-    }
+    // if (queryString === 'error') {
+    //     const errorDiv = document.getElementById('login-failed');
+    //     errorDiv.style.display = 'block';
+    //     errorDiv.innerText = "이메일 혹은 비밀번호가 틀렸습니다. 이메일 혹은 비밀번호를 확인하세요.";
+    // }
 
     const host = 'http://' + window.location.host;
     console.log(host)
@@ -71,8 +75,12 @@
                 window.location.href = host + '/login-page';
             })
             .fail(function (jqXHR, textStatus) {
-                alert("Login Fail");
-                window.location.href = host + '/login-page'
+                const errorDiv = document.getElementById('login-failed');
+                errorDiv.innerText = jqXHR.responseJSON.ErrorMessage;
+                errorDiv.style.display = 'block';
+                $('#email').val('');
+                $('#password').val('');
+
             });
     }
 </script>
