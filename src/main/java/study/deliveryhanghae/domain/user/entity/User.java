@@ -24,6 +24,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRoleEnum authority;
     private String address;
+    private Long point;
 
     @Builder
     public User(String email, String password, String nickname, String address) {
@@ -32,5 +33,10 @@ public class User {
         this.nickname = nickname;
         this.address = address;
         this.authority = UserRoleEnum.USER;
+        this.point = 10000L;
+    }
+
+    public void updatePoint(Long point) {
+        this.point = point;
     }
 }
