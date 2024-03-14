@@ -1,14 +1,5 @@
 package study.deliveryhanghae.domain.user.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import study.deliveryhanghae.domain.user.entity.User;
+public interface UserRepository {
 
-import java.util.Optional;
-
-public interface UserRepository extends JpaRepository<User, Long> {
-
-    Optional<User> findByEmail(String username);
-
-    Optional<User> findByNickname(String nickname);
 }
-
