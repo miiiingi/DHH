@@ -73,6 +73,10 @@
             <h2>보유 포인트</h2>
             <p id="point">[[${responseDto.point}]]</p>
         </div>
+        <div class="payment-info">
+            <h2>잔여 포인트</h2>
+            <p th:text="${responseDto.point - responseDto.price}"></p>
+        </div>
         <input type="hidden" id="id" name="id" th:field="*{id}">
         <input type="hidden" id="requestPrice" name="price" th:field="*{price}">
         <button type="submit">결제하기</button>
