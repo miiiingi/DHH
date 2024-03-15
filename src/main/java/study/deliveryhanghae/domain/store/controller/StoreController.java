@@ -20,16 +20,16 @@ public class StoreController {
     public String getMainPage(Model model){
         List<StoreListDto> storeList = storeService.getStoreList();
         model.addAttribute("stores",storeList);
-        return "main";
+        return "index";
     }
 
     @GetMapping("/search")
     public String getSearchStore(
             Model model,
-            @RequestParam("menu") String menuName){
-        List<StoreListDto> storeList = storeService.getSearchStroeList(menuName);
+            @RequestParam("searchMenu") String searchMenu){
+        List<StoreListDto> storeList = storeService.getSearchStroeList(searchMenu);
         model.addAttribute("stores",storeList);
-        return "main";
+        return "index";
     }
 
 }

@@ -3,7 +3,6 @@ package study.deliveryhanghae.domain.store.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
-import study.deliveryhanghae.domain.store.repository.MenuRepository;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
 
 import java.util.List;
@@ -24,8 +23,8 @@ public class StoreService {
         return storeList;
     }
 
-    public List<StoreListDto> getSearchStroeList(String menuName) {
-        List<StoreListDto> storeList = storeRepository.findByMenuListNameContaining(menuName)
+    public List<StoreListDto> getSearchStroeList(String searchMenu) {
+        List<StoreListDto> storeList = storeRepository.findByMenuListNameContaining(searchMenu)
                 .stream()
                 .map(store -> new StoreListDto(store.getId(),
                         store.getName(),

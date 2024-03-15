@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deliever_Hang_Hae</title>
+    <link rel="stylesheet" href="style.css" />
+    <link th:href="@{/css/main.css}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<!-- header -->
+<header class="header">
+    <!-- <h1 class="logo">Brand</h1> -->
+    <div class="header-left">
+        <img src="./images/logo.png" class="logo" />
+    </div>
+    <div class="header-center" >
+        <form class="input-form" th:action="@{/search}" method="get">
+            <input
+                    class="input"
+                    type="search"
+                    name="searchMenu"
+                    placeholder="먹고싶은 음식을 검색해 보세요"
+            />
+            <button type="submit" class="input-button">검색</button>
+        </form>
+    </div>
+    <div class="header-right">
+        <nav class="menu">
+            <span class="menu-button">HOME</span>
+            <span class="menu-button">SERVICE</span>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="main-background">
+        <div class="store-list">
+            <!-- Iterate over your list of stores -->
+            <div class="store-list">
+                <!-- Iterate over your list of stores -->
+                <div th:each="store : ${stores}" class="store-item">
+                    <div class="store-card">
+                        <div class="store-image-container">
+                            <!-- Store image -->
+                            <img th:src="@{${store.imageUrl}}" alt="store img" class="store-image">
+                        </div>
+                        <!-- Store name -->
+                        <p class="store-name" th:text="${store.name}">Store Name</p>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+</main>
+</body>
+</html>
