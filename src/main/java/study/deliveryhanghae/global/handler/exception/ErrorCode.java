@@ -21,6 +21,9 @@ public enum ErrorCode {
     // Pay
     PAYMENT_REQUIRED(402, "P001","잔액 부족입니다."),
 
+    // Order
+    NOT_FOUND_MENU(400, "O001", "해당하는 메뉴가 없습니다."),
+
     // Cart
     NOT_FOUND_CART(400, "C001", "장바구니가 비어있습니다."),
     ACCESS_DENIED_MEMBER(400, "C002", "접근할 수 없는 장바구니 입니다."),
