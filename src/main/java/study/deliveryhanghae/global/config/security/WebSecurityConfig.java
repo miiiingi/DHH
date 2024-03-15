@@ -1,4 +1,5 @@
 package study.deliveryhanghae.global.config.security;
+
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -18,9 +19,9 @@ import study.deliveryhanghae.global.config.security.jwt.JwtAuthenticationFilter;
 import study.deliveryhanghae.global.config.security.jwt.JwtAuthorizationFilter;
 import study.deliveryhanghae.global.config.security.jwt.JwtUtil;
 
-@Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true)
+//@Configuration
+//@EnableWebSecurity
+//@EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
