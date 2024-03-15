@@ -73,7 +73,7 @@ public class OrderService {
         //한도초과 확인
         if (availablePoints < PurchasePoints) {
             //한도 초과시 동작
-            throw new BusinessException(PAYMENT_REQUIRED);
+            return -1;
         }
         user.updatePoint(availablePoints - PurchasePoints);
         return user.getPoint();

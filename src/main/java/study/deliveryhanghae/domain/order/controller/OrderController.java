@@ -29,7 +29,7 @@ public class OrderController {
     public String pay(@ModelAttribute OrderRequestDto.PayDto requestDto, Model model) {
         int remainingPoints = orderService.pay(requestDto);
         model.addAttribute("remainingPoints", remainingPoints);
-        return "success_pay";
+        return "pay";
     }
 
 }
