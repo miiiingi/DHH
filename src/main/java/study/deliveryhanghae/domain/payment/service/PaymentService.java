@@ -13,6 +13,7 @@ import study.deliveryhanghae.global.config.security.jwt.JwtUtil;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 
 import static study.deliveryhanghae.global.handler.exception.ErrorCode.ENTITY_NOT_FOUND;
+import static study.deliveryhanghae.global.handler.exception.ErrorCode.PAYMENT_REQUIRED;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class PaymentService {
         //한도초과 확인
         if (availablePoints < PurchasePoints) {
             //한도 초과시 동작
-            return 0L;
+            throw new BusinessException(PAYMENT_REQUIRED);
         }
         user.updatePoint(availablePoints - PurchasePoints);
         return user.getPoint();

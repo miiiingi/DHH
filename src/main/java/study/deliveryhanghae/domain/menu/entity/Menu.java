@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.deliveryhanghae.domain.store.entity.Store;
 
 @Entity
 @Getter
@@ -27,5 +28,9 @@ public class Menu {
 
     @Column(nullable = false)
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name ="store_id")
+    private Store store;
 
 }

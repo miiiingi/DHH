@@ -30,11 +30,6 @@ public class PaymentController {
         return "payment";
     }
 
-//    @GetMapping("/payment")
-//    public String paymentPage() {
-//        return "payment";
-//    }
-
     @PostMapping("/payment")
     public String pay(@ModelAttribute PayRequestDto requestDto, Model model) {
         Long remainingPoints = paymentService.pay(requestDto);
