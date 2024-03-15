@@ -1,4 +1,4 @@
-package study.deliveryhanghae.domain.menu.repository;
+package study.deliveryhanghae.domain.store.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
