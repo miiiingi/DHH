@@ -27,7 +27,7 @@ public class OrderController {
 
     @PostMapping("/payment")
     public String pay(@ModelAttribute OrderRequestDto.PayDto requestDto, Model model) {
-        Long remainingPoints = orderService.pay(requestDto);
+        int remainingPoints = orderService.pay(requestDto);
         model.addAttribute("remainingPoints", remainingPoints);
         return "success_pay";
     }

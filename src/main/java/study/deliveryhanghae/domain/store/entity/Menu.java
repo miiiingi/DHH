@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class Menu {
     @Id
@@ -20,7 +18,7 @@ public class Menu {
     private String name;
 
     @Column(nullable = false)
-    private Long price;
+    private int price;
 
     @Column(nullable = false)
     private String imageUrl;
@@ -31,5 +29,13 @@ public class Menu {
     @ManyToOne
     @JoinColumn(name ="store_id")
     private Store store;
-
+    @Builder
+    public Menu(Long id, String name, int price, String imageUrl, String description, Store store) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.description = description;
+        this.store = store;
+    }
 }

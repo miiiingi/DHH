@@ -19,8 +19,8 @@ public class StoreResponseDto{
 
     }
 
-    public record GetMenuList (Long menuId, String menuName, Long menuPrice, String menuUrl) {
-        public GetMenuList(Long menuId, String menuName, Long menuPrice, String menuUrl){
+    public record GetMenuList (Long menuId, String menuName, int menuPrice, String menuUrl) {
+        public GetMenuList(Long menuId, String menuName, int menuPrice, String menuUrl){
             this.menuId = menuId;
             this.menuName = menuName;
             this.menuPrice = menuPrice;
