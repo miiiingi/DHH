@@ -19,9 +19,9 @@ import study.deliveryhanghae.global.config.security.jwt.JwtAuthenticationFilter;
 import study.deliveryhanghae.global.config.security.jwt.JwtAuthorizationFilter;
 import study.deliveryhanghae.global.config.security.jwt.JwtUtil;
 
-//@Configuration
-//@EnableWebSecurity
-//@EnableMethodSecurity(securedEnabled = true)
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
