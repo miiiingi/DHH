@@ -14,6 +14,7 @@
 <body>
 
 <h1 th:text="${storeName}"></h1>
+<input type="hidden" id="userDetails" th:value="${userDetails}"/>
 
 <div class="card" style="display: flex; width: 18rem;" th:each="menu : ${menuList}">
     <img class="card-img-top" th:src="@{${menu.menuUrl()}}" alt="Card image cap">
@@ -26,8 +27,12 @@
 
 <script type="text/javascript">
     function order(menuId) {
-        // 여기서 회원 검증을 수행
-        var authenticated = false; // 예시로 비회원으로 설정
+        let userDetails = document.getElementById('userDetails').value;
+        let authenticated = false; // 비회원으로 초기화
+        if (userDetails == "USER_LOGIN") {
+            authenticated = true; // 회원으로 설정
+        }
+
         const host = 'http://' + window.location.host;
 
         if (authenticated) {
