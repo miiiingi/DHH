@@ -28,14 +28,15 @@
     function order(menuId) {
         // 여기서 회원 검증을 수행
         var authenticated = false; // 예시로 비회원으로 설정
+        const host = 'http://' + window.location.host;
 
         if (authenticated) {
-            location.href = "http://localhost:8080/orders/" + menuId;
+            window.location.href = host + '/orders' + menuId;
         } else {
             // 회원 검증을 위해 로그인 페이지로 이동하는 알림 띄우기
             alert("회원 검증을 위해 로그인 페이지로 이동합니다.");
             // 로그인 페이지로 이동
-            location.href = "http://localhost:8080/login-page";
+            window.location.href = host + '/login-page';
         }
     }
 </script>
