@@ -41,7 +41,6 @@
         Cookies.remove('Authorization', {path: '/'});
     });
 
-
     const host = 'http://' + window.location.host;
     console.log(host)
 
@@ -59,13 +58,18 @@
             .done(function (res, status, xhr) {
                 const token = xhr.getResponseHeader('Authorization');
 
-                Cookies.set('Authorization', token, {path: '/'})
+                Cookies.set('Authorization', token, {path: '/'});
 
                 $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
                     jqXHR.setRequestHeader('Authorization', token);
                 });
 
-                window.location.href = host + '/login-page';
+                const redirect = getParameterByName('redirect');
+                if (redirect) {
+                    window.location.href = host + redirect;
+                } else {
+                    window.location.href = host + '/store';
+                }
             })
             .fail(function (jqXHR, textStatus) {
                 const errorDiv = document.getElementById('login-failed');
@@ -75,6 +79,15 @@
                 $('#password').val('');
 
             });
+    }
+
+    function getParameterByName(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
     }
 </script>
 </html>
