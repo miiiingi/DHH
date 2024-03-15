@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.deliveryhanghae.domain.order.repository.OrderRepository;
 import study.deliveryhanghae.domain.payment.dto.PaymentRequestDto.PayRequestDto;
+import study.deliveryhanghae.domain.payment.dto.PaymentRequestDto.OrderRequestDto;
+import study.deliveryhanghae.domain.payment.dto.PaymentResponseDto.PayResponseDto;
 import study.deliveryhanghae.domain.user.entity.User;
 import study.deliveryhanghae.domain.user.repository.UserRepository;
 import study.deliveryhanghae.global.config.security.jwt.JwtUtil;
@@ -19,6 +21,12 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
+    public PayResponseDto order(OrderRequestDto requestDto){
+        User user = userRepository.findById(requestDto.id()).orElseThrow(() ->
+                new BusinessException(ENTITY_NOT_FOUND));
+        PayResponseDto responseDto = new PayResponseDto(requestDto.price(), requestDto.id(), user.getPoint());
+        return responseDto;
+    }
     @Transactional
     public Long pay(PayRequestDto requestDto) {
         User user = userRepository.findById(requestDto.id()).orElseThrow(() ->

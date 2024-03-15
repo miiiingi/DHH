@@ -1,20 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>주문 폼</title>
+    <title>음식 주문 및 결제</title>
+    <style>
+        /* CSS 스타일링은 여기에 작성합니다. */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .food-menu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .food-item {
+            width: 30%;
+            margin-bottom: 20px;
+        }
+        .food-item img {
+            width: 100%;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+        .payment {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .payment-info {
+            margin: 0 20px;
+        }
+        .payment button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<h1>주문 정보 입력</h1>
-<form action="/orders/payment" method="post">
-    <label for="id">사용자 아이디:</label>
-    <input type="text" id="id" name="id"><br><br>
+<div class="container">
+    <h1>음식 주문 및 결제</h1>
 
-    <label for="price">가격:</label>
-    <input type="text" id="price" name="price"><br><br>
+    <!-- 음식 주문 -->
+    <div class="food-menu">
+        <div class="food-item">
+            <p>음식 설명 1</p>
+        </div>
+        <!-- 다른 음식들도 유사하게 추가 -->
+    </div>
 
-    <button type="submit">주문하기</button>
-</form>
+    <!-- 주문 가격 및 결제 -->
+    <form id="payment-form" class="payment" action="/orders/payment" th:object="${responseDto}" method="post">
+        <div>
+            <h2>주문 가격</h2>
+            <p id="price">[[${responseDto.price}]]</p>
+        </div>
+        <div class="payment-info">
+            <h2>보유 포인트</h2>
+            <p id="point">[[${responseDto.point}]]</p>
+        </div>
+        <input type="hidden" id="id" name="id" th:field="*{id}">
+        <input type="hidden" id="requestPrice" name="price" th:field="*{price}">
+        <button type="submit">결제하기</button>
+    </form>
+</div>
+
 </body>
 </html>
