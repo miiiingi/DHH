@@ -8,7 +8,8 @@ public class OrderResponseDto {
             String menuUrl,
             Long menuPrice,
             Long point,
-            String remainPoint
+            String remainPoint,
+            Long userId
     ) {
 
     }

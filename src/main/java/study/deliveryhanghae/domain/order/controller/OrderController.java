@@ -18,13 +18,9 @@ public class OrderController {
     public String order(@PathVariable Long menuId, Model model) {
         Long userId = 1L;
 
-        OrderResponseDto.OrderDto order = orderService.order(menuId, userId);
+        OrderResponseDto.OrderDto responseDto = orderService.order(menuId, userId);
 
-        model.addAttribute("menuName", order.menuName());
-        model.addAttribute("menuUrl", order.menuUrl());
-        model.addAttribute("menuPrice", order.menuPrice());
-        model.addAttribute("point", order.point());
-        model.addAttribute("remainPoint", order.remainPoint());
+        model.addAttribute("responseDto", responseDto);
 
         return "payment";
     }

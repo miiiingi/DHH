@@ -59,7 +59,7 @@ public class OrderService {
             remainPoint = "잔고가 부족합니다.";
         }
 
-        return new OrderResponseDto.OrderDto(menu.getId(), menu.getName(), menu.getImageUrl(), menu.getPrice(), user.getPoint(), remainPoint);
+        return new OrderResponseDto.OrderDto(menu.getId(), menu.getName(), menu.getImageUrl(), menu.getPrice(), user.getPoint(), remainPoint, userId);
     }
 
     @Transactional
