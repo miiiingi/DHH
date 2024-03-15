@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,21 +67,21 @@
     </div>
 
     <!-- 주문 가격 및 결제 -->
-    <form id="payment-form" class="payment" action="/orders/payment" method="post">
+    <form id="payment-form" class="payment" action="/orders/payment" th:object="${responseDto}" method="post">
         <div>
             <h2>주문 가격</h2>
-            <p id="price" th:text="${menuPrice}"></p>
+            <p>[[${responseDto.menuPrice}]]</p>
         </div>
         <div class="payment-info">
             <h2>보유 포인트</h2>
-            <p id="point" th:text="${point}"></p>
+            <p>[[${responseDto.point}]]</p>
         </div>
         <div class="payment-info">
             <h2>잔여 포인트</h2>
-            <p th:text="${remainPoint}"></p>
+            <p>[[${responseDto.remainPoint}]]</p>
         </div>
-        <input type="hidden" id="id" name="id" th:field="*{menuId}">
-        <input type="hidden" id="requestPrice" name="price" th:field="*{menuPrice}">
+        <input type="hidden" id="id" name="id" th:value="${responseDto.userId}">
+        <input type="hidden" id="price" name="price" th:value="${responseDto.menuPrice}">
         <button type="submit">결제하기</button>
     </form>
 </div>

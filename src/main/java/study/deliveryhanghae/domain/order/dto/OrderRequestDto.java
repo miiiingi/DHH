@@ -3,7 +3,7 @@ package study.deliveryhanghae.domain.order.dto;
 public class OrderRequestDto {
 
     public record PayDto(
-            Long price,
+            int price,
             Long id
     ){
 
@@ -11,7 +11,7 @@ public class OrderRequestDto {
 
     public record OrderDto(
             Long menuId,
-            Long price
+            int price
     ) {
     }
 }

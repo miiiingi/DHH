@@ -6,16 +6,17 @@ public class OrderResponseDto {
             Long id,
             String menuName,
             String menuUrl,
-            Long menuPrice,
-            Long point,
-            String remainPoint
+            int menuPrice,
+            int point,
+            String remainPoint,
+            Long userId
     ) {
 
     }
     public record PayDto(
-            Long price,
+            int price,
             Long id,
-            Long point
+            int point
     ) {
     }
 

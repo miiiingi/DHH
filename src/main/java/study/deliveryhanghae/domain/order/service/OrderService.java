@@ -59,21 +59,21 @@ public class OrderService {
             remainPoint = "잔고가 부족합니다.";
         }
 
-        return new OrderResponseDto.OrderDto(menu.getId(), menu.getName(), menu.getImageUrl(), menu.getPrice(), user.getPoint(), remainPoint);
+        return new OrderResponseDto.OrderDto(menu.getId(), menu.getName(), menu.getImageUrl(), menu.getPrice(), user.getPoint(), remainPoint, userId);
     }
 
     @Transactional
-    public Long pay(OrderRequestDto.PayDto requestDto) {
+    public int pay(OrderRequestDto.PayDto requestDto) {
         User user = userRepository.findById(requestDto.id()).orElseThrow(() ->
                 new BusinessException(ENTITY_NOT_FOUND));
         //유저 보유 포인트
-        Long availablePoints = user.getPoint();
+        int availablePoints = user.getPoint();
         //구매할 물건의 가격 포인트
-        Long PurchasePoints = requestDto.price();
+        int PurchasePoints = requestDto.price();
         //한도초과 확인
         if (availablePoints < PurchasePoints) {
             //한도 초과시 동작
-            throw new BusinessException(PAYMENT_REQUIRED);
+            return -1;
         }
         user.updatePoint(availablePoints - PurchasePoints);
         return user.getPoint();
