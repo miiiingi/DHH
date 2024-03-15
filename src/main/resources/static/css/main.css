@@ -1,0 +1,170 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 9rem;
+    color: white;
+    background-color: teal;
+    opacity: 0.85;
+    /* background-color: teal; */
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    z-index: 3;
+}
+
+.header-left {
+    padding-left: 5rem;
+    width: 25em;
+}
+
+.header-center {
+    width: 50em;
+    display: flex;
+    justify-content: center;
+}
+
+.header-right {
+    padding-right: 5rem;
+    width: 25em;
+    display: flex;
+    justify-content: center;
+}
+
+.input {
+    width: 15rem;
+    height: 2rem;
+    border-radius: 5px;
+}
+
+.input-button {
+    height: 2rem;
+}
+
+.menu-button {
+    transition: transform 0.3s ease;
+}
+
+.menu-button:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+.menu-button:active {
+    transform: scale(0.9);
+    cursor: grab;
+}
+
+.menu {
+    display: flex;
+    flex-direction: row;
+    width: 10rem;
+    justify-content: space-around;
+}
+
+.logo {
+    width: 13rem;
+    height: 6rem;
+    z-index: 20;
+}
+
+h1,
+p {
+    margin: 0;
+    color: white;
+}
+
+main {
+    padding: 1rem;
+    position: relative;
+    margin-top: 4rem;
+}
+
+.main-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 2;
+}
+
+body {
+    background-image: url("https://images.unsplash.com/photo-1526367790999-0150786686a2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGRlbGl2ZXJ5fGVufDB8fDB8fHww");
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 6rem;
+    background-attachment: fixed;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+/* html {
+  height: 100%;
+} */
+
+* {
+    box-sizing: border-box;
+}
+
+
+/*store list*/
+
+.store-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 1rem;
+}
+
+.store-item {
+    flex: 0 0 calc(33.333% - 2rem); /* Adjust width as per your requirement */
+    margin: 1rem;
+}
+
+
+.store-name {
+    margin-top: 0.5rem;
+    font-weight: bold;
+}
+
+.store-card {
+    /* Your existing styles */
+    width: 335px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    text-align: center;
+}
+
+.store-image-container {
+    width: 300px;
+    height: 200px; /* Set the desired height for the image container */
+    overflow: hidden; /* Hide any overflow from images */
+    border-radius: 2px; /* Optional: Apply border radius to container */
+}
+
+.store-image {
+    width: 100%; /* Ensure the image takes the full width of its container */
+    height: 100%; /* Maintain aspect ratio */
+    object-fit: cover; /* Scale the image while maintaining its aspect ratio */
+}
+
+a{
+    text-decoration: none;
+}
