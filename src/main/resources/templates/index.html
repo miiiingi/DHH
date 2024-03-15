@@ -44,12 +44,12 @@
                         <div class="store-image-container">
                             <!-- Store image -->
                             <!-- 사진, 가게 이름 클릭시 해당 가게 상세 페이지로 연결 -->
-                            <a th:href="@{'/store/' + ${store.id}}" class="store-link">
+                            <a th:href="@{'/' + ${store.id}}" class="store-link">
                                 <img th:src="@{${store.imageUrl}}" alt="store img" class="store-image">
                             </a>
                         </div>
                         <!-- Store name -->
-                        <a th:href="@{'/store/' + ${store.id}}" class="store-link">
+                        <a th:href="@{'/' + ${store.id}}" class="store-link">
                             <p class="store-name" th:text="${store.name}">Store Name</p>
                         </a>
                     </div>
