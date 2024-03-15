@@ -57,6 +57,4 @@ public class UserController {
     public void login(@RequestBody LoginRequestRecord requestDto) {
 
     }
-
-
 }

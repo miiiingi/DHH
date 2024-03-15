@@ -1,15 +1,23 @@
 package study.deliveryhanghae.domain.order.service;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import study.deliveryhanghae.domain.order.dto.OrderRequestDto;
 import study.deliveryhanghae.domain.order.dto.OrderResponseDto;
+import study.deliveryhanghae.domain.order.entity.Order;
 import study.deliveryhanghae.domain.order.repository.OrderRepository;
-import study.deliveryhanghae.domain.payment.entity.Menu;
-import study.deliveryhanghae.domain.payment.repository.MenuRepository;
+import study.deliveryhanghae.domain.store.entity.Menu;
+import study.deliveryhanghae.domain.store.repository.MenuRepository;
 import study.deliveryhanghae.domain.user.entity.User;
 import study.deliveryhanghae.domain.user.repository.UserRepository;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
+
+import static study.deliveryhanghae.global.handler.exception.ErrorCode.ENTITY_NOT_FOUND;
+import static study.deliveryhanghae.global.handler.exception.ErrorCode.PAYMENT_REQUIRED;
+
+;
 
 @Service
 public class OrderService {
@@ -25,16 +33,49 @@ public class OrderService {
         this.userRepository = userRepository;
     }
 
-    public OrderResponseDto order(Long menuId, Long userId) {
+    @Transactional
+    public OrderResponseDto.OrderDto order(Long menuId, Long userId) {
+        return getOrderDto(menuId, userId, menuRepository, userRepository, orderRepository);
+    }
 
+    @NotNull
+    static OrderResponseDto.OrderDto getOrderDto(Long menuId, Long userId, MenuRepository menuRepository, UserRepository userRepository, OrderRepository orderRepository) {
         Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MENU));
 
         User user = userRepository.getReferenceById(userId);
 
-        OrderRequestDto requestDto = new OrderRequestDto(menu);
+        Order order = Order.builder()
+                .user(user)
+                .menu(menu)
+                .build();
 
-        orderRepository.save(requestDto.toEntity(menu, user));
+        orderRepository.save(order);
 
-        return new OrderResponseDto(menu.getName(), menu.getImage_url(), menu.getPrice());
+        String remainPoint = "";
+
+        remainPoint = String.valueOf(user.getPoint() - menu.getPrice());
+
+        if (menu.getPrice() > user.getPoint()) {
+            remainPoint = "잔고가 부족합니다.";
+        }
+
+        return new OrderResponseDto.OrderDto(menu.getId(), menu.getName(), menu.getImageUrl(), menu.getPrice(), user.getPoint(), remainPoint);
+    }
+
+    @Transactional
+    public Long pay(OrderRequestDto.PayDto requestDto) {
+        User user = userRepository.findById(requestDto.id()).orElseThrow(() ->
+                new BusinessException(ENTITY_NOT_FOUND));
+        //유저 보유 포인트
+        Long availablePoints = user.getPoint();
+        //구매할 물건의 가격 포인트
+        Long PurchasePoints = requestDto.price();
+        //한도초과 확인
+        if (availablePoints < PurchasePoints) {
+            //한도 초과시 동작
+            throw new BusinessException(PAYMENT_REQUIRED);
+        }
+        user.updatePoint(availablePoints - PurchasePoints);
+        return user.getPoint();
     }
 }

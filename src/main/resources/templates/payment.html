@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>음식 주문 및 결제</title>
+    <style>
+        /* CSS 스타일링은 여기에 작성합니다. */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .food-menu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .food-item {
+            width: 30%;
+            margin-bottom: 20px;
+        }
+        .food-item img {
+            width: 100%;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+        .payment {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .payment-info {
+            margin: 0 20px;
+        }
+        .payment button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>음식 주문 및 결제</h1>
+
+    <!-- 음식 주문 -->
+    <div class="card" style="display: flex; width: 18rem;" >
+        <img class="card-img-top" th:src="@{${menuUrl}}" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title" th:text="${menuName}"></h5>
+        </div>
+    </div>
+
+    <!-- 주문 가격 및 결제 -->
+    <form id="payment-form" class="payment" action="/orders/payment" method="post">
+        <div>
+            <h2>주문 가격</h2>
+            <p id="price" th:text="${menuPrice}"></p>
+        </div>
+        <div class="payment-info">
+            <h2>보유 포인트</h2>
+            <p id="point" th:text="${point}"></p>
+        </div>
+        <div class="payment-info">
+            <h2>잔여 포인트</h2>
+            <p th:text="${remainPoint}"></p>
+        </div>
+        <input type="hidden" id="id" name="id" th:field="*{menuId}">
+        <input type="hidden" id="requestPrice" name="price" th:field="*{menuPrice}">
+        <button type="submit">결제하기</button>
+    </form>
+</div>
+
+</body>
+</html>

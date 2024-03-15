@@ -18,8 +18,11 @@ public enum ErrorCode {
     ALREADY_EXIST_NICKNAME(400, "M003", "이미 가입된 닉네임입니다."),
     NOT_MATCH_EMAIL_PASSWORD(400, "M004", "이메일 혹은 비밀번호가 틀렸습니다. 이메일 혹은 비밀번호를 확인하세요."),
 
-    // Product
-    NOT_FOUND_PRODUCT(400, "P001", "상품을 찾을 수 없습니다."),
+    // Pay
+    PAYMENT_REQUIRED(402, "P001","잔액 부족입니다."),
+
+    // Order
+    NOT_FOUND_MENU(400, "O001", "해당하는 메뉴가 없습니다."),
 
     // Cart
     NOT_FOUND_CART(400, "C001", "장바구니가 비어있습니다."),

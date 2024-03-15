@@ -1,13 +1,12 @@
 package study.deliveryhanghae.domain.order.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import study.deliveryhanghae.domain.payment.entity.Menu;
+import study.deliveryhanghae.domain.store.entity.Menu;
 import study.deliveryhanghae.domain.user.entity.User;
 
 @Getter
@@ -34,6 +33,5 @@ public class Order {
         this.user = user;
         this.menu = menu;
     }
-
 
 }
