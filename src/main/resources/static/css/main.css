@@ -164,3 +164,7 @@ body::after {
     height: 100%; /* Maintain aspect ratio */
     object-fit: cover; /* Scale the image while maintaining its aspect ratio */
 }
+
+a{
+    text-decoration: none;
+}
