@@ -84,12 +84,11 @@ public class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
-                authorizeHttpRequests
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/login-page").permitAll()
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
+                        authorizeHttpRequests
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                                .requestMatchers("/**").permitAll()
+                                .requestMatchers("/orders/").hasAuthority("ROLE_USER")
+                                .anyRequest().authenticated()
         );
 
         http.formLogin((formLogin) ->
