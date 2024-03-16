@@ -91,12 +91,12 @@ public class WebSecurityConfig {
                                 .anyRequest().authenticated()
         );
 
-        http.formLogin((formLogin) ->
-                formLogin.loginProcessingUrl("/login-page")
-                        .permitAll()
-                        .successHandler(customAuthenticationSuccessHandler())
-                        .failureHandler(customAuthenticationFailureHandler())
-        );
+//        http.formLogin((formLogin) ->
+//                formLogin.loginProcessingUrl("/login-page")
+//                        .permitAll()
+//                        .successHandler(customAuthenticationSuccessHandler())
+//                        .failureHandler(customAuthenticationFailureHandler())
+//        );
 
         http.exceptionHandling((e) -> e.accessDeniedHandler(customAccessDeniedHandler));
         http.exceptionHandling((e) -> e.authenticationEntryPoint(customAuthenticationEntryPoint));
