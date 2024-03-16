@@ -32,4 +32,7 @@ public class Owner {
         this.password = password;
         this.point = point;
     }
+    public void updatePoint(int point) {
+        this.point = point;
+    }
 }

@@ -73,14 +73,13 @@ public class OrderService {
         Menu menu = menuRepository.findById(requestDto.menuId()).orElseThrow(()->
                 new BusinessException(ENTITY_NOT_FOUND));
         user.updatePoint(calculateRemain(user.getPoint(), menu.getPrice()));
-        createOrder(menu.getId(),user.getId());
+        createOrder(menu, user);
+        processUserPayment(menu);
         return user.getPoint();
     }
 
     @Transactional
-    public void createOrder(Long menuId, Long userId){
-        Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MENU));
-        User user = userRepository.getReferenceById(userId);
+    public void createOrder(Menu menu, User user){
         Store store = menu.getStore();
         Owner owner = store.getOwner();
 
@@ -93,6 +92,11 @@ public class OrderService {
                 .build();
 
         orderRepository.save(order);
+    }
+    @Transactional
+    public void processUserPayment(Menu menu){
+        Owner owner = menu.getStore().getOwner();
+        owner.updatePoint(menu.getPrice());
     }
     @Transactional(readOnly = true)
     public List<getOrderDto> getOrderList(){
