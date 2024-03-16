@@ -7,15 +7,13 @@ import study.deliveryhanghae.domain.order.dto.OrderRequestDto;
 import study.deliveryhanghae.domain.order.dto.OrderResponseDto;
 import study.deliveryhanghae.domain.order.entity.Order;
 import study.deliveryhanghae.domain.order.repository.OrderRepository;
-import study.deliveryhanghae.domain.store.entity.Menu;
-import study.deliveryhanghae.domain.store.repository.MenuRepository;
+import study.deliveryhanghae.domain.menu.repository.MenuRepository;
 import study.deliveryhanghae.domain.user.entity.User;
 import study.deliveryhanghae.domain.user.repository.UserRepository;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
 import static study.deliveryhanghae.global.handler.exception.ErrorCode.ENTITY_NOT_FOUND;
-import static study.deliveryhanghae.global.handler.exception.ErrorCode.PAYMENT_REQUIRED;
 
 ;
 

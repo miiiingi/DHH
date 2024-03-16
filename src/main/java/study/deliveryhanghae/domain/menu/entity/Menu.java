@@ -1,10 +1,10 @@
-package study.deliveryhanghae.domain.store.entity;
+package study.deliveryhanghae.domain.menu.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.deliveryhanghae.domain.store.entity.Store;
 
 @Entity
 @Getter
