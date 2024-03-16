@@ -5,10 +5,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 import study.deliveryhanghae.domain.menu.entity.Menu;
 import study.deliveryhanghae.domain.owner.entity.Owner;
 import study.deliveryhanghae.domain.store.entity.Store;
@@ -48,10 +48,12 @@ public class Order{
 
     @CreationTimestamp
     @Column(name = "create_at")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createAt;
 
     @UpdateTimestamp
     @Column(name = "finished_at")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime finishedAt;
 
     @Builder

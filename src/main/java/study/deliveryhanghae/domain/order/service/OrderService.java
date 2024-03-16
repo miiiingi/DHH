@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.deliveryhanghae.domain.menu.entity.Menu;
 import study.deliveryhanghae.domain.order.dto.OrderRequestDto.PayDto;
-import study.deliveryhanghae.domain.order.dto.OrderResponseDto;
+import study.deliveryhanghae.domain.order.dto.OrderResponseDto.getOrderDto;
 import study.deliveryhanghae.domain.order.dto.OrderResponseDto.OrderDto;
 import study.deliveryhanghae.domain.order.entity.Order;
 import study.deliveryhanghae.domain.order.entity.OrderStatusEnum;
@@ -18,6 +18,9 @@ import study.deliveryhanghae.domain.user.entity.User;
 import study.deliveryhanghae.domain.user.repository.UserRepository;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static study.deliveryhanghae.global.handler.exception.ErrorCode.ENTITY_NOT_FOUND;
 
@@ -86,10 +89,15 @@ public class OrderService {
                 .menu(menu)
                 .store(store)
                 .owner(owner)
-                .orderStatus(OrderStatusEnum.ORDER_PLACED)
+                .orderStatus(OrderStatusEnum.PREPARING)
                 .build();
 
         orderRepository.save(order);
+    }
+    @Transactional(readOnly = true)
+    public List<getOrderDto> getOrderList(){
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream().map(getOrderDto::mapToOrderDto).collect(Collectors.toList());
     }
 
 }

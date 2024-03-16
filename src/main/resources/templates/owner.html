@@ -6,7 +6,7 @@
 </head>
 <body>
 <div>
-    <h2>사장님 잔액: <span th:text="${balance}"></span></h2>
+    <h2>사장님 잔액: <span th:text="${ownersPoint}"></span></h2>
 </div>
 <div>
     <table>
@@ -20,9 +20,9 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="order : ${orders}">
-            <td th:text="${order.orderNumber}"></td>
-            <td th:text="${order.orderTime}"></td>
+        <tr th:each="order : ${orderList}">
+            <td th:text="${order.orderId}"></td>
+            <td th:text="${order.createdAt}"></td>
             <td th:text="${order.menuName}"></td>
             <td th:text="${order.orderStatus}"></td>
             <td>
