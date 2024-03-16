@@ -67,7 +67,7 @@
     </div>
 
     <!-- 주문 가격 및 결제 -->
-    <form id="payment-form" class="payment" action="/orders/payment" th:object="${responseDto}" method="post">
+    <form id="payment-form" class="payment" action="/v1/orders/payment" th:object="${responseDto}" method="post">
         <div>
             <h2>주문 가격</h2>
             <p>[[${responseDto.menuPrice}]]</p>

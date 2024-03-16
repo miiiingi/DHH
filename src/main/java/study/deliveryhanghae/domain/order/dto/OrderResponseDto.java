@@ -1,6 +1,7 @@
 package study.deliveryhanghae.domain.order.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import study.deliveryhanghae.domain.order.entity.Order;
 import study.deliveryhanghae.domain.order.entity.OrderStatusEnum;
@@ -41,11 +42,5 @@ public class OrderResponseDto {
 
     }
 
-    public record PayDto(
-            int price,
-            Long id,
-            int point
-    ) {
-    }
 
 }

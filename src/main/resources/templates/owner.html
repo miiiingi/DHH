@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>사장님 페이지</title>
+
 </head>
 <body>
 <div>
@@ -24,11 +25,10 @@
             <td th:text="${order.orderId}"></td>
             <td th:text="${order.createdAt}"></td>
             <td th:text="${order.menuName}"></td>
-            <td th:text="${order.orderStatus}"></td>
-            <td>
-                <form th:action="@{/completeOrder}" method="post">
-                    <input type="hidden" name="orderId" th:value="${order.orderId}">
-                    <button type="submit" th:text="배달완료"></button>
+            <td id="status_${order.orderId}" th:text="${order.orderStatus}"></td>
+            <td th:unless="${order.orderStatus == '배달 완료' }">
+                <form th:action="@{'/v2/deliverys/' + ${order.orderId}}" method="post">
+                    <button type="submit">배달완료</button>
                 </form>
             </td>
         </tr>

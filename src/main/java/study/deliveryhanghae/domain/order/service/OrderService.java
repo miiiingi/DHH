@@ -74,7 +74,6 @@ public class OrderService {
                 new BusinessException(ENTITY_NOT_FOUND));
         user.updatePoint(calculateRemain(user.getPoint(), menu.getPrice()));
         createOrder(menu, user);
-        processUserPayment(menu);
         return user.getPoint();
     }
 
@@ -94,7 +93,10 @@ public class OrderService {
         orderRepository.save(order);
     }
     @Transactional
-    public void processUserPayment(Menu menu){
+    public void processUserPayment(Long orderId){
+        Order order = orderRepository.findById(orderId).orElseThrow(() ->
+                new BusinessException(ENTITY_NOT_FOUND));
+        Menu menu = order.getMenu();
         Owner owner = menu.getStore().getOwner();
         owner.updatePoint(menu.getPrice());
     }
@@ -102,6 +104,13 @@ public class OrderService {
     public List<getOrderDto> getOrderList(){
         List<Order> orders = orderRepository.findAll();
         return orders.stream().map(getOrderDto::mapToOrderDto).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateOrderStatus(Long orderId){
+        Order order = orderRepository.findById(orderId).orElseThrow(() ->
+                new BusinessException(ENTITY_NOT_FOUND));
+        order.updateOrderStatus();
     }
 
 }

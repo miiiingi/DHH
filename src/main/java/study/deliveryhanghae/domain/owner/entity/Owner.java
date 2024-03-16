@@ -33,6 +33,6 @@ public class Owner {
         this.point = point;
     }
     public void updatePoint(int point) {
-        this.point = point;
+        this.point += point;
     }
 }

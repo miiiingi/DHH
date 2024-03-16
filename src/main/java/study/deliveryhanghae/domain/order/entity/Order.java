@@ -67,4 +67,8 @@ public class Order{
         this.createAt = createAt;
         this.finishedAt = finishedAt;
     }
+
+    public void updateOrderStatus(){
+        this.orderStatus = OrderStatusEnum.DELIVERED;
+    }
 }
