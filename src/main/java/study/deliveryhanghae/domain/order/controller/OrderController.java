@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import study.deliveryhanghae.domain.order.dto.OrderRequestDto;
+import study.deliveryhanghae.domain.order.dto.OrderRequestDto.PayDto;
 import study.deliveryhanghae.domain.order.dto.OrderResponseDto;
 import study.deliveryhanghae.domain.order.service.OrderService;
 
@@ -26,7 +26,7 @@ public class OrderController {
     }
 
     @PostMapping("/payment")
-    public String pay(@ModelAttribute OrderRequestDto.PayDto requestDto, Model model) {
+    public String pay(@ModelAttribute PayDto requestDto, Model model) {
         int remainingPoints = orderService.pay(requestDto);
         model.addAttribute("remainingPoints", remainingPoints);
         return "pay";

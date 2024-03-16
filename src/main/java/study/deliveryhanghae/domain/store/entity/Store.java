@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.deliveryhanghae.domain.menu.entity.Menu;
+import study.deliveryhanghae.domain.owner.entity.Owner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,10 @@ public class Store {
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Menu> menuList = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private Owner owner;
 
     @Builder
     public Store(String name, String imageUrl) {

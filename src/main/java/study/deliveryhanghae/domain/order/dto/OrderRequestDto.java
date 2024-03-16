@@ -1,17 +1,14 @@
 package study.deliveryhanghae.domain.order.dto;
 
+import study.deliveryhanghae.domain.menu.entity.Menu;
+
 public class OrderRequestDto {
 
     public record PayDto(
-            int price,
-            Long id
+            Long id, //유저 아이디
+            Long menuId
     ){
 
     }
 
-    public record OrderDto(
-            Long menuId,
-            int price
-    ) {
-    }
 }
