@@ -60,9 +60,9 @@
 
     <!-- 음식 주문 -->
     <div class="card" style="display: flex; width: 18rem;" >
-        <img class="card-img-top" th:src="@{${menuUrl}}" alt="Card image cap">
+        <img class="card-img-top" th:src="@{${responseDto.menuUrl()}}" alt="Card image cap">
         <div class="card-body">
-            <h5 class="card-title" th:text="${menuName}"></h5>
+            <h5 class="card-title" th:text="${responseDto.menuName()}"></h5>
         </div>
     </div>
 

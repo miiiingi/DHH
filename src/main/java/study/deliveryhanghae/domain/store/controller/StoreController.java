@@ -1,6 +1,7 @@
 package study.deliveryhanghae.domain.store.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
 import study.deliveryhanghae.domain.store.service.StoreService;
+import study.deliveryhanghae.global.config.security.UserDetailsImpl;
 
 import java.util.List;
 
@@ -19,30 +21,34 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping
-    public String getMainPage(Model model){
+    public String getMainPage(Model model) {
         List<StoreListDto> storeList = storeService.getStoreList();
-        model.addAttribute("stores",storeList);
+        model.addAttribute("stores", storeList);
         return "index";
     }
 
     @GetMapping("/search")
     public String getSearchStore(
             Model model,
-            @RequestParam("searchMenu") String searchMenu){
+            @RequestParam("searchMenu") String searchMenu) {
         List<StoreListDto> storeList = storeService.getSearchStroeList(searchMenu);
-        model.addAttribute("stores",storeList);
+        model.addAttribute("stores", storeList);
         return "index";
     }
 
     @GetMapping("/{storeId}")
-    public String getStore(@PathVariable Long storeId, Model model) {
-
+    public String getStore(@PathVariable Long storeId, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String storeName = storeService.getStore(storeId).storeName();
-
         List<StoreResponseDto.GetMenuList> menuLists = storeService.getStore(storeId).menuLists();
-
         model.addAttribute("storeName", storeService.getStore(storeId).storeName());
         model.addAttribute("menuList", storeService.getStore(storeId).menuLists());
+        if (userDetails == null) {
+            model.addAttribute("userDetails", "USER_NOT_LOGIN");
+
+        } else {
+            model.addAttribute("userDetails", "USER_LOGIN");
+
+        }
         return "store";
     }
 
