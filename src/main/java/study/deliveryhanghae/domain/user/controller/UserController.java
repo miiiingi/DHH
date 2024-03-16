@@ -4,16 +4,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import study.deliveryhanghae.domain.user.dto.LoginRequestRecord;
 import study.deliveryhanghae.domain.user.dto.SignupRequestRecord;
 import study.deliveryhanghae.domain.user.service.UserService;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @Slf4j(topic = "회원가입, 로그인")
@@ -21,6 +22,7 @@ import study.deliveryhanghae.global.handler.exception.BusinessException;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private int number;
 
     @GetMapping("favicon.ico")
     @ResponseBody
@@ -56,5 +58,37 @@ public class UserController {
     @PostMapping("/login")
     public void login(@RequestBody LoginRequestRecord requestDto) {
 
+    }
+
+    // 인증 이메일 전송
+    @PostMapping("/mailSend")
+    @ResponseBody
+    public HashMap<String, Object> mailSend(@RequestBody Map<String, String> body) {
+        String mail = body.get("mail");
+        System.out.println("mail send의 mail = " + mail);
+        HashMap<String, Object> map = new HashMap<>();
+        int number;
+
+        try {
+            number = userService.sendMail(mail);
+            String num = String.valueOf(number);
+
+            map.put("success", Boolean.TRUE);
+            map.put("number", num);
+        } catch (Exception e) {
+            map.put("success", Boolean.FALSE);
+            map.put("error", e.getMessage());
+        }
+
+        return map;
+    }
+
+    // 인증번호 일치여부 확인
+    @GetMapping("/mailCheck")
+    public ResponseEntity<?> mailCheck(@RequestParam String userNumber) {
+
+        boolean isMatch = userNumber.equals(String.valueOf(number));
+
+        return ResponseEntity.ok(isMatch);
     }
 }

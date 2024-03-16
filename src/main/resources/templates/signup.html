@@ -8,20 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <meta charset="UTF-8">
     <title>회원가입 페이지</title>
+    <!-- jQuery 라이브러리를 로드합니다. -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function onclickAdmin() {
-            // Get the checkbox
-            var checkBox = document.getElementById("admin-check");
-            // Get the output text
-            var box = document.getElementById("admin-token");
-
-            // If the checkbox is checked, display the output text
-            if (checkBox.checked == true) {
-                box.style.display = "block";
-            } else {
-                box.style.display = "none";
-            }
-        }
 
         function validatePassword() {
             var password = document.getElementById("password").value;
@@ -33,6 +22,37 @@
                 document.getElementById("password-match").innerHTML = "";
             }
         }
+
+        $(document).ready(function () {
+            $("#login-id-submit").click(function (event) {
+                event.preventDefault(); // 폼 제출 방지
+
+                // 폼 데이터를 객체로 만듭니다.
+                var formData = {
+                    mail: $("input[name='email']").val()
+
+                };
+
+                // 서버로 데이터를 전송합니다.
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "/mailSend", // 회원가입 처리를 하는 엔드포인트 주소
+                    data: JSON.stringify(formData),
+                    dataType: 'json',
+                    success: function (result) {
+                        console.log(result); // 성공 시 서버에서 받은 결과를 출력합니다.
+                        // 여기에 성공 시의 추가 작업을 추가할 수 있습니다.
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText); // 에러 시 서버에서 받은 에러 메시지를 출력합니다.
+                        // 여기에 에러 시의 추가 작업을 추가할 수 있습니다.
+                    }
+                });
+            });
+        });
+
+
     </script>
 </head>
 <body>
