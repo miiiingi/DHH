@@ -84,18 +84,11 @@ public class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
-                        authorizeHttpRequests
-                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                .requestMatchers("/**").permitAll()
-                                .requestMatchers("/orders/").hasAuthority("ROLE_USER")
-                                .anyRequest().authenticated()
-        );
-
-        http.formLogin((formLogin) ->
-                formLogin.loginProcessingUrl("/login-page")
-                        .permitAll()
-                        .successHandler(customAuthenticationSuccessHandler())
-                        .failureHandler(customAuthenticationFailureHandler())
+                authorizeHttpRequests
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/orders/").hasAuthority("ROLE_USER")
+                        .anyRequest().authenticated()
         );
 
         http.exceptionHandling((e) -> e.accessDeniedHandler(customAccessDeniedHandler));
