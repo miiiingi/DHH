@@ -109,16 +109,8 @@
 
     // 회원 가입 폼 전송
     function submitForm() {
-        // 이메일 값을 가져옵니다.
         var email = document.getElementById("verification-email").value;
-        console.log("submitform email: " + email);
-
-        // 숨겨진 input 필드에 이메일 값을 설정합니다.
         document.getElementById("email").value = email;
-        var hiddenEmail = document.getElementById("email").value
-        console.log("hidden email: " + hiddenEmail);
-
-        // 폼을 전송합니다.
         document.getElementById("signup-form").submit();
     }
 </script>

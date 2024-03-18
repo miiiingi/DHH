@@ -4,11 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import study.deliveryhanghae.domain.user.dto.LoginRequestRecord;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import study.deliveryhanghae.domain.user.dto.SignupRequestRecord;
 import study.deliveryhanghae.domain.user.service.UserService;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
@@ -29,14 +30,14 @@ public class UserController {
     public void returnNoFavicon() {
     }
 
-    @GetMapping("/signup")
+    @GetMapping("/v1/signup")
     public String signupPage(Model model) {
         model.addAttribute("ErrorCode", null);
         model.addAttribute("ErrorMessage", null);
         return "signup";
     }
 
-    @GetMapping("/login-page")
+    @GetMapping("/v1/login")
     public String loginPage() {
         return "login";
     }
@@ -53,14 +54,9 @@ public class UserController {
             model.addAttribute("ErrorMessage", ex.getErrorCode().getMessage());
             return "signup";
         }
-        return "redirect:/login-page";
+        return "redirect:/v1/login";
     }
 
-    @Operation(summary = "유저 로그인", description = "유저 로그인 사용할 정보를 입력합니다.")
-    @PostMapping("/login")
-    public void login(@RequestBody LoginRequestRecord requestDto) {
-
-    }
 
     // 인증 이메일 전송
     @PostMapping("/mailSend")
@@ -85,12 +81,4 @@ public class UserController {
         return map;
     }
 
-    // 인증번호 일치여부 확인
-    @GetMapping("/mailCheck")
-    public ResponseEntity<?> mailCheck(@RequestParam String userNumber) {
-
-        boolean isMatch = userNumber.equals(String.valueOf(number));
-
-        return ResponseEntity.ok(isMatch);
-    }
 }
