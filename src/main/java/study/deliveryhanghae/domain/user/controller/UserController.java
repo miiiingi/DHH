@@ -44,6 +44,8 @@ public class UserController {
     @Operation(summary = "회원가입", description = "회원 가입시 필요한 정보를 입력합니다.")
     @PostMapping("/signup")
     public String signup(SignupRequestRecord requestDto, Model model) {
+        System.out.println("requestDto.address() = " + requestDto.address());
+        System.out.println("requestDto.email() = " + requestDto.email());
         try {
             userService.signUp(requestDto);
         } catch (BusinessException ex) {
