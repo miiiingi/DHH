@@ -45,8 +45,6 @@ public class UserController {
     @Operation(summary = "회원가입", description = "회원 가입시 필요한 정보를 입력합니다.")
     @PostMapping("/signup")
     public String signup(SignupRequestRecord requestDto, Model model) {
-        System.out.println("requestDto.address() = " + requestDto.address());
-        System.out.println("requestDto.email() = " + requestDto.email());
         try {
             userService.signUp(requestDto);
         } catch (BusinessException ex) {
@@ -63,14 +61,12 @@ public class UserController {
     @ResponseBody
     public HashMap<String, Object> mailSend(@RequestBody Map<String, String> body) {
         String mail = body.get("mail");
-        System.out.println("mail send의 mail = " + mail);
         HashMap<String, Object> map = new HashMap<>();
         int number;
 
         try {
             number = userService.sendMail(mail);
             String num = String.valueOf(number);
-
             map.put("success", Boolean.TRUE);
             map.put("number", num);
         } catch (Exception e) {

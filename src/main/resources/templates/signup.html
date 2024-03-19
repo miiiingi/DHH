@@ -84,12 +84,10 @@
 
     // 이메일 인증 요청
     function sendMailVerification() {
-        // 폼 데이터를 객체로 만듭니다.
         var formData = {
             mail: $("input[name='verification-email']").val()
         };
 
-        // 서버로 데이터를 전송합니다.
         $.ajax({
             type: "POST",
             contentType: "application/json",
@@ -98,7 +96,6 @@
             dataType: 'json',
             success: function (result) {
                 verificationResult = result;
-                // 서버로부터 받은 인증번호를 콜백 함수에 전달합니다.
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText); // 에러 시 서버에서 받은 에러 메시지를 출력합니다.
