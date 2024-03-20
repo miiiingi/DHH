@@ -50,3 +50,23 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:1.0 .
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:1.0
+  deploy:
+    # needs를 통해 build job이 수행 성공시에 작업되도록 설정
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      # NCP 로그인 / docker image pull & run
+      - name: NCP login and docker image pull and run
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.NCP_HOST }}
+          username: ${{ secrets.NCP_USERNAME }}
+          password: ${{ secrets.NCP_PASSWORD }}
+          port: ${{ secrets.NCP_PORT }}
+          script: |
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:1.0
+            cd ~
+            sudo docker-compose up -d
+            sudo docker image prune -f
