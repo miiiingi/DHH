@@ -28,6 +28,10 @@ public enum ErrorCode {
     NOT_FOUND_CART(400, "C001", "장바구니가 비어있습니다."),
     ACCESS_DENIED_MEMBER(400, "C002", "접근할 수 없는 장바구니 입니다."),
 
+    // STORE
+    NOT_FOUND_STORE(400, "S001", "가게 정보가 없습니다."),
+    NOT_FOUND_STORE_MENU(400, "S002", "해당하는 메뉴가 없습니다."),
+
     ;
     private final String code;
     private final String message;
