@@ -67,7 +67,7 @@
     </div>
 
     <!-- 주문 가격 및 결제 -->
-    <form id="payment-form" class="payment" action="/orders/payment" th:object="${responseDto}" method="post">
+    <form id="payment-form" class="payment" action="/v1/orders/payment" th:object="${responseDto}" method="post">
         <div>
             <h2>주문 가격</h2>
             <p>[[${responseDto.menuPrice}]]</p>
@@ -81,7 +81,7 @@
             <p>[[${responseDto.remainPoint}]]</p>
         </div>
         <input type="hidden" id="id" name="id" th:value="${responseDto.userId}">
-        <input type="hidden" id="price" name="price" th:value="${responseDto.menuPrice}">
+        <input type="hidden" id="menuId" name="menuId" th:value="${responseDto.id}">
         <button type="submit">결제하기</button>
     </form>
 </div>

@@ -2,11 +2,11 @@ package study.deliveryhanghae.domain.store.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import study.deliveryhanghae.domain.menu.entity.Menu;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
-import study.deliveryhanghae.domain.store.entity.Menu;
 import study.deliveryhanghae.domain.store.entity.Store;
-import study.deliveryhanghae.domain.store.repository.MenuRepository;
+import study.deliveryhanghae.domain.menu.repository.MenuRepository;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
 
 import java.util.ArrayList;

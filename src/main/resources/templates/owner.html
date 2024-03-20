@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>사장님 페이지</title>
+
+</head>
+<body>
+<div>
+    <h2>사장님 잔액: <span th:text="${ownersPoint}"></span></h2>
+</div>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>주문번호</th>
+            <th>주문시간</th>
+            <th>메뉴이름</th>
+            <th>주문상태</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orderList}">
+            <td th:text="${order.orderId}"></td>
+            <td th:text="${order.createdAt}"></td>
+            <td th:text="${order.menuName}"></td>
+            <td id="status_${order.orderId}" th:text="${order.orderStatus}"></td>
+            <td th:unless="${order.orderStatus == '배달 완료' }">
+                <form th:action="@{'/v2/deliverys/' + ${order.orderId}}" method="post">
+                    <button type="submit">배달완료</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
