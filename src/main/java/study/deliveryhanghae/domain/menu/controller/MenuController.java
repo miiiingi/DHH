@@ -24,14 +24,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j(topic = "메뉴 CRUD")
 @Tag(name = "Menu API", description = "메뉴 CRUD")
-@RequestMapping("/v2")
 public class MenuController {
 
     private final MenuService menuService;
 
     // 메뉴 등록
     @Operation(summary = "가게 메뉴 등록", description = "가게 메뉴를 추가한 뒤 메인페이지로 이동합니다.")
-    @PostMapping("/menu")
+    @PostMapping("/v2/menu")
     public String createMenu(@ModelAttribute MenuRequestDto.CreateMenuDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         // 유저 정보에서 가게 정보 가져오기
         try {
@@ -46,7 +45,7 @@ public class MenuController {
     }
 
     @Operation(summary = "선택 메뉴 상세 페이지 이동", description = "선택한 메뉴의 상세페이지로 이동합니다.")
-    @GetMapping("/menu/{id}")
+    @GetMapping("/v2/menu/{id}")
     public String getMenu(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
 
         Long ownerId = userDetails.getUser().getId();
@@ -56,7 +55,7 @@ public class MenuController {
     }
 
     @Operation(summary = "메뉴의 내용 수정", description = "메뉴의 내용을 수정합니다.")
-    @PutMapping("/menu/{id}")
+    @PutMapping("/v2/menu/{id}")
     @ResponseBody
     public ResponseEntity<String> updateMenu(@PathVariable Long id, @RequestPart(value="key") MenuRequestDto.UpdateMenuDto requestDto,
                              @RequestPart(value = "menuImg", required = false) MultipartFile menuImg) throws IOException {
@@ -72,7 +71,7 @@ public class MenuController {
     }
 
     @Operation(summary = "메뉴를 삭제합니다.", description = "메뉴를 삭제합니다.")
-    @DeleteMapping("/menu/{id}")
+    @DeleteMapping("/v2/menu/{id}")
     @ResponseBody
     public String deleteMenu( @PathVariable Long id){
         menuService.deleteMenu(id);
