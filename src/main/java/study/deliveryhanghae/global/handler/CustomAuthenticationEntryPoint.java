@@ -1,4 +1,4 @@
-package study.deliveryhanghae.global.config.security;
+package study.deliveryhanghae.global.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

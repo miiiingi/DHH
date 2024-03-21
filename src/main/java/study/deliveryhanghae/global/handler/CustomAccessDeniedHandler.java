@@ -1,4 +1,4 @@
-package study.deliveryhanghae.global.config.security;
+package study.deliveryhanghae.global.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

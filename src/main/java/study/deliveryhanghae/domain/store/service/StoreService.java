@@ -32,7 +32,7 @@ public class StoreService {
     private final OwnerRepository ownerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final String uploadDir = "D:/HH99/spring/DHH/src/main/resources/static/images/";
+    private final String uploadDir = "/Users/aper/Desktop/DHH/DHH/src/main/resources/static/images/";
 
     // 업장 전체 목록 조회
     public List<StoreListDto> getStoreList() {
@@ -62,12 +62,12 @@ public class StoreService {
 
     // 사장님 가게 등록
     @Transactional
-    public void createOwnerStore(CreateStoreDto requestDto, Long ownerId, MultipartFile file) throws IOException {
+    public void createOwnerStore(CreateStoreDto requestDto, Owner owner, MultipartFile file) throws IOException {
 
         String fullPath = uploadDir + file.getOriginalFilename();
         file.transferTo(new File(fullPath));
 
-        Owner ownerDB = ownerRepository.getReferenceById(ownerId);
+        Owner ownerDB = ownerRepository.getReferenceById(owner.getId());
 
         ownerDB.hasStore();
 
@@ -76,9 +76,9 @@ public class StoreService {
 
     // 사장님 가게,메뉴 리스트 얻기
     @Transactional(readOnly = true)
-    public GetStoreDto getOwnerStore(Long owner) {
+    public GetStoreDto getOwnerStore(Owner owner) {
 
-        Store store = storeRepository.findByOwnerId(owner);
+        Store store = storeRepository.findByOwner(owner);
 
         return getGetMenuList(store);
     }
@@ -86,16 +86,16 @@ public class StoreService {
     /***
      * 
      * 
-     * @param owner  // 임시로 1L 보내는 중 security 적용 후 owner 다시 변경 필요
+     * @param owner
      * @param requestDto
      * @param file
      * @throws IOException
      */
     // 사장님 가게 정보 수정
     @Transactional
-    public void updateOwnerStore(Long owner, UpdateStoreDto requestDto, MultipartFile file) throws IOException {
+    public void updateOwnerStore(Owner owner, UpdateStoreDto requestDto, MultipartFile file) throws IOException {
 
-        Store store = storeRepository.findByOwnerId(owner);
+        Store store = storeRepository.findByOwner(owner);
 
         String fullPath = uploadDir + file.getOriginalFilename();
         file.transferTo(new File(fullPath));
@@ -112,14 +112,14 @@ public class StoreService {
     /**
      *
      *
-     * @param ownerId
-     * 시큐리티 적용전까지 1L 로 고정하여 넣어둠 적용 후 변경 필요
+     * @param owner
      */
+
     // 사장님 가게 삭제
     @Transactional
-    public void deleteOwnerStore(Long ownerId) {
+    public void deleteOwnerStore(Owner owner) {
 
-        Owner ownerDB = ownerRepository.getReferenceById(ownerId);
+        Owner ownerDB = ownerRepository.getReferenceById(owner.getId());
 
         ownerDB.deleteStore();
 

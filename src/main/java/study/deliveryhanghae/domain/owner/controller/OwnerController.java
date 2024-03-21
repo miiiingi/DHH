@@ -13,7 +13,7 @@ import study.deliveryhanghae.domain.order.service.OrderService;
 import study.deliveryhanghae.domain.owner.dto.OwnerRequestDto;
 import study.deliveryhanghae.domain.owner.dto.OwnerResponseDto.GetMainDto;
 import study.deliveryhanghae.domain.owner.service.OwnerService;
-import study.deliveryhanghae.global.config.security.UserDetailsImpl;
+import study.deliveryhanghae.global.config.security.owner.OwnerDetailsImpl;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 
 import java.util.List;
@@ -61,13 +61,14 @@ public class OwnerController {
      * @return
      */
     @GetMapping("/v2")
-    public String getOwnerMain(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public String getOwnerMain(Model model, @AuthenticationPrincipal OwnerDetailsImpl userDetails){
         // 사장님 가게 가지고 있는 상태 확인하고 없으면 생성하도록 반환
-//        if (userDetails.getUser().isStoreStatus() == false) {
-//            return "storeRegister";
-//        }
+        if (userDetails.getOwner().isStoreStatus() == false) {
+            return "storeRegister";
+        }
+
         List<getOrderDto> orderList=orderService.getOrderList();
-        GetMainDto mainResponseDto = new GetMainDto(orderList,ownerService.getOwnerPoint(1L));
+        GetMainDto mainResponseDto = new GetMainDto(orderList,ownerService.getOwnerPoint(userDetails.getOwner().getId()));
         model.addAttribute("mainResponseDto",mainResponseDto);
         return "owner";
     }

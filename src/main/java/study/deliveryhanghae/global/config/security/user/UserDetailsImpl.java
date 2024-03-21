@@ -1,15 +1,13 @@
-package study.deliveryhanghae.global.config.security;
+package study.deliveryhanghae.global.config.security.user;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import study.deliveryhanghae.domain.user.entity.User;
-import study.deliveryhanghae.domain.user.entity.UserRoleEnum;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
-
+@Getter
 public class UserDetailsImpl implements UserDetails {
     private final User user;
 
@@ -17,20 +15,9 @@ public class UserDetailsImpl implements UserDetails {
         this.user = user;
     }
 
-    public User getUser() {
-        return user;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        UserRoleEnum role = user.getAuthority();
-        String authority = role.getAuthority();
-
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(simpleGrantedAuthority);
-
-        return authorities;
+        return null;
     }
 
     @Override

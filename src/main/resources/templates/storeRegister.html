@@ -85,7 +85,7 @@
 
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('request', JSON.stringify(jsonData));
+        formData.append('request', new Blob([JSON.stringify((jsonData))],{type: "application/json"}));
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/v2/store', true);
