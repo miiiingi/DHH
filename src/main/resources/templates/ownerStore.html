@@ -104,7 +104,7 @@
                     <ul class="list-unstyled d-flex flex-column gap-2 text text-center">
                         <li>
                             <div>
-                                <strong class="d-block" name="storeName" th:text="${storeName}">가게 이름</strong>
+                                <strong class="d-block" name="storeName" th:text="${store.storeName()}">가게 이름</strong>
 <!--                                <img src=@{${storeUrl}} class="rounded mx-auto d-block" alt="가게 썸네일" width="200px" height="200px" >-->
                             </div>
                         </li>
@@ -199,7 +199,7 @@
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
                 <div class="col">
-                    <div class="card mb-3" style="max-width: 540px;" th:each="menu : ${menuList}">
+                    <div class="card mb-3" style="max-width: 540px;" th:each="menu : ${store.menuLists()}">
                         <div class="row g-0">
                             <div class="col-md-4">
                                 <!--                                <img th:src="@{${menu.menuUrl()}}" th:id="img_ + ${menu.menuId()}" class="img-fluid rounded-start" width="225" height="100%">-->

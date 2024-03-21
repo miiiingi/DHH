@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import study.deliveryhanghae.domain.owner.dto.OwnerRequestDto;
 import study.deliveryhanghae.domain.owner.entity.Owner;
 import study.deliveryhanghae.domain.owner.repository.OwnerRepository;
-import study.deliveryhanghae.domain.user.dto.SignupRequestRecord;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
 

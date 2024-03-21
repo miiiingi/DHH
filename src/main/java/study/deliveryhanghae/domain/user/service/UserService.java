@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import study.deliveryhanghae.domain.user.dto.SignupRequestRecord;
+import study.deliveryhanghae.domain.user.dto.UserRequestDto.SignupRequestRecord;
 import study.deliveryhanghae.domain.user.entity.User;
 import study.deliveryhanghae.domain.user.repository.UserRepository;
 import study.deliveryhanghae.global.handler.exception.BusinessException;

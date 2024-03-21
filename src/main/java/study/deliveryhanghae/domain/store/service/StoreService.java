@@ -8,13 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import study.deliveryhanghae.domain.menu.entity.Menu;
+import study.deliveryhanghae.domain.menu.repository.MenuRepository;
 import study.deliveryhanghae.domain.owner.entity.Owner;
 import study.deliveryhanghae.domain.owner.repository.OwnerRepository;
-import study.deliveryhanghae.domain.store.dto.StoreRequestDto;
-import study.deliveryhanghae.domain.store.dto.StoreResponseDto;
+import study.deliveryhanghae.domain.store.dto.StoreRequestDto.CreateStoreDto;
+import study.deliveryhanghae.domain.store.dto.StoreRequestDto.UpdateStoreDto;
+import study.deliveryhanghae.domain.store.dto.StoreResponseDto.GetMenuListDto;
+import study.deliveryhanghae.domain.store.dto.StoreResponseDto.GetStoreDto;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
 import study.deliveryhanghae.domain.store.entity.Store;
-import study.deliveryhanghae.domain.menu.repository.MenuRepository;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
 
 import java.io.File;
@@ -45,7 +47,7 @@ public class StoreService {
     }
 
     // 선택한 업장, 해당 업장의 메뉴 목록 반환
-    public StoreResponseDto.GetStore getStore(Long storeId) {
+    public GetStoreDto getStore(Long storeId) {
 
         Store store = storeRepository.getReferenceById(storeId);
 
@@ -60,7 +62,7 @@ public class StoreService {
 
     // 사장님 가게 등록
     @Transactional
-    public void createOwnerStore(StoreRequestDto.Create requestDto, Long ownerId, MultipartFile file) throws IOException {
+    public void createOwnerStore(CreateStoreDto requestDto, Long ownerId, MultipartFile file) throws IOException {
 
         String fullPath = uploadDir + file.getOriginalFilename();
         file.transferTo(new File(fullPath));
@@ -74,7 +76,7 @@ public class StoreService {
 
     // 사장님 가게,메뉴 리스트 얻기
     @Transactional(readOnly = true)
-    public StoreResponseDto.GetStore getOwnerStore(Long owner) {
+    public GetStoreDto getOwnerStore(Long owner) {
 
         Store store = storeRepository.findByOwnerId(owner);
 
@@ -91,7 +93,7 @@ public class StoreService {
      */
     // 사장님 가게 정보 수정
     @Transactional
-    public void updateOwnerStore(Long owner, StoreRequestDto.Update requestDto, MultipartFile file) throws IOException {
+    public void updateOwnerStore(Long owner, UpdateStoreDto requestDto, MultipartFile file) throws IOException {
 
         Store store = storeRepository.findByOwnerId(owner);
 
@@ -144,14 +146,14 @@ public class StoreService {
 
 
     @NotNull
-    private StoreResponseDto.GetStore getGetMenuList(Store store) {
+    private GetStoreDto getGetMenuList(Store store) {
         List<Menu> menus = menuRepository.findByStore(store);
 
-        List<StoreResponseDto.GetMenuList> menuLists = new ArrayList<>();
+        List<GetMenuListDto> menuLists = new ArrayList<>();
 
         for (Menu menu : menus) {
             menuLists.add(
-                    new StoreResponseDto.GetMenuList(
+                    new GetMenuListDto(
                             menu.getId(),
                             menu.getName(),
                             menu.getPrice(),
@@ -160,7 +162,7 @@ public class StoreService {
                     )
             );
         }
-        return new StoreResponseDto.GetStore(menuLists, store.getName());
+        return new GetStoreDto(menuLists, store.getName());
     }
 
 

@@ -7,13 +7,13 @@ public class StoreResponseDto{
 
     }
 
-    public record GetStore(
-            List<GetMenuList> menuLists,
+    public record GetStoreDto(
+            List<GetMenuListDto> menuLists,
             String storeName
     ) {
     }
 
-    public record GetMenuList (Long menuId,
+    public record GetMenuListDto (Long menuId,
                                String menuName,
                                int menuPrice,
                                String menuUrl,

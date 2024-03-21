@@ -1,12 +1,7 @@
 package study.deliveryhanghae.domain.order.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import study.deliveryhanghae.domain.order.entity.Order;
-import study.deliveryhanghae.domain.order.entity.OrderStatusEnum;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class OrderResponseDto {
@@ -39,8 +34,5 @@ public class OrderResponseDto {
                     order.getMenu().getName()
             );
         }
-
     }
-
-
 }

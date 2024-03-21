@@ -5,7 +5,7 @@ import study.deliveryhanghae.domain.store.entity.Store;
 
 public class StoreRequestDto {
 
-    public record Create(String name, String businessNumber, String address, String description) {
+    public record CreateStoreDto(String name, String businessNumber, String address, String description) {
 
         public Store toEntity(Owner owner, String imageUrl, String originFileName) {
             return Store.builder()
@@ -20,7 +20,7 @@ public class StoreRequestDto {
         };
     }
 
-    public record Update(String name, String address, String description) {
+    public record UpdateStoreDto(String name, String address, String description) {
 
     }
 }
