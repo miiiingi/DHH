@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import study.deliveryhanghae.domain.order.dto.OrderResponseDto.getOrderDto;
 import study.deliveryhanghae.domain.order.service.OrderService;
 import study.deliveryhanghae.domain.owner.dto.OwnerRequestDto;
+import study.deliveryhanghae.domain.owner.dto.OwnerResponseDto.GetMainDto;
 import study.deliveryhanghae.domain.owner.service.OwnerService;
 import study.deliveryhanghae.global.config.security.UserDetailsImpl;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
@@ -66,10 +67,8 @@ public class OwnerController {
 //            return "storeRegister";
 //        }
         List<getOrderDto> orderList=orderService.getOrderList();
-
-        model.addAttribute("orderList",orderList);
-        model.addAttribute("ownersPoint", ownerService.getOwnerPoint(1L));
-
+        GetMainDto mainResponseDto = new GetMainDto(orderList,ownerService.getOwnerPoint(1L));
+        model.addAttribute("mainResponseDto",mainResponseDto);
         return "owner";
     }
 }

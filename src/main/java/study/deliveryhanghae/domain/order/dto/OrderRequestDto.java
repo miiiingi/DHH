@@ -1,7 +1,5 @@
 package study.deliveryhanghae.domain.order.dto;
 
-import study.deliveryhanghae.domain.menu.entity.Menu;
-
 public class OrderRequestDto {
 
     public record PayDto(

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import study.deliveryhanghae.domain.order.dto.OrderRequestDto.PayDto;
-import study.deliveryhanghae.domain.order.dto.OrderResponseDto;
+import study.deliveryhanghae.domain.order.dto.OrderResponseDto.OrderDto;
 import study.deliveryhanghae.domain.order.service.OrderService;
 
 @Controller
@@ -16,11 +16,8 @@ public class OrderController {
     @RequestMapping(value = "/v1/orders/{menuId}", method = {RequestMethod.GET, RequestMethod.POST})
     public String order(@PathVariable Long menuId, Model model) {
         Long userId = 1L;
-
-        OrderResponseDto.OrderDto responseDto = orderService.order(menuId, userId);
-
+        OrderDto responseDto = orderService.order(menuId, userId);
         model.addAttribute("responseDto", responseDto);
-
         return "order";
     }
 

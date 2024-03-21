@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import study.deliveryhanghae.domain.menu.dto.MenuRequestDto;
+import study.deliveryhanghae.domain.menu.dto.MenuRequestDto.CreateMenuDto;
+import study.deliveryhanghae.domain.menu.dto.MenuRequestDto.UpdateMenuDto;
 import study.deliveryhanghae.domain.menu.entity.Menu;
 import study.deliveryhanghae.domain.menu.repository.MenuRepository;
-import study.deliveryhanghae.domain.store.dto.StoreResponseDto;
+import study.deliveryhanghae.domain.store.dto.StoreResponseDto.GetMenuListDto;
 import study.deliveryhanghae.domain.store.entity.Store;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
@@ -32,7 +33,7 @@ public class MenuService {
 
     // 메뉴 추가
     @Transactional
-    public void createMenu(MenuRequestDto.CreateMenuDto requestDto, Long ownerId) throws IOException {
+    public void createMenu(CreateMenuDto requestDto, Long ownerId) throws IOException {
         // owner 정보에서 가게 정보 뽑기
         Store store = getStoreByOwner(ownerId);
 
@@ -45,7 +46,7 @@ public class MenuService {
         menuRepository.save(menu);
     }
 
-    public StoreResponseDto.GetMenuList getMenu(Long id, Long ownerId) {
+    public GetMenuListDto getMenu(Long id, Long ownerId) {
         // 유저의 가게 가져오기
         Store store = getStoreByOwner(ownerId);
 
@@ -60,7 +61,7 @@ public class MenuService {
             throw new BusinessException(NOT_FOUND_STORE_MENU);
         }
 
-        return new StoreResponseDto.GetMenuList(
+        return new GetMenuListDto(
                 menu.getId(),
                 menu.getName(),
                 menu.getPrice(),
@@ -69,7 +70,7 @@ public class MenuService {
     }
 
     @Transactional
-    public void updateMenu(Long id, MenuRequestDto.UpdateMenuDto requestDto, MultipartFile menuImg) throws IOException {
+    public void updateMenu(Long id, UpdateMenuDto requestDto, MultipartFile menuImg) throws IOException {
         // 메뉴 존재하는지 확인
         Menu menu = hasMenu(id);
 
@@ -92,7 +93,6 @@ public class MenuService {
         Menu menu = hasMenu(id);
         menuRepository.delete(menu);
     }
-
 
     // 유저 가게 정보 확인
     private Store getStoreByOwner(Long ownerId) {

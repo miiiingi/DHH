@@ -1,7 +1,6 @@
 package study.deliveryhanghae.global.config.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +10,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import study.deliveryhanghae.domain.user.dto.LoginRequestRecord;
+import study.deliveryhanghae.domain.user.dto.UserRequestDto;
+import study.deliveryhanghae.domain.user.dto.UserRequestDto.LoginRequestRecord;
 import study.deliveryhanghae.domain.user.entity.UserRoleEnum;
 import study.deliveryhanghae.global.config.security.UserDetailsImpl;
 import study.deliveryhanghae.global.handler.exception.BusinessException;

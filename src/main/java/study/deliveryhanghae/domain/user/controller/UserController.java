@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-import study.deliveryhanghae.domain.user.dto.SignupRequestRecord;
+import study.deliveryhanghae.domain.user.dto.UserRequestDto.SignupRequestRecord;
 import study.deliveryhanghae.domain.user.service.UserService;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 
@@ -57,7 +57,6 @@ public class UserController {
         String mail = body.get("mail");
         HashMap<String, Object> map = new HashMap<>();
         int number;
-
         try {
             number = userService.sendMail(mail);
             String num = String.valueOf(number);
@@ -67,7 +66,6 @@ public class UserController {
             map.put("success", Boolean.FALSE);
             map.put("error", e.getMessage());
         }
-
         return map;
     }
 

@@ -13,10 +13,10 @@
 </head>
 <body>
 
-<h1 th:text="${storeName}"></h1>
+<h1 th:text="${store.storeName()}"></h1>
 <input type="hidden" id="userDetails" th:value="${userDetails}"/>
 
-<div class="card" style="display: flex; width: 18rem;" th:each="menu : ${menuList}">
+<div class="card" style="display: flex; width: 18rem;" th:each="menu : ${store.menuLists()}">
     <img class="card-img-top" th:src="@{${menu.menuUrl()}}" alt="Card image cap">
     <div class="card-body">
         <h5 class="card-title" th:text="${menu.menuName()}"></h5>

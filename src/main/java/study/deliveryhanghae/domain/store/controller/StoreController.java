@@ -1,6 +1,5 @@
 package study.deliveryhanghae.domain.store.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import study.deliveryhanghae.domain.store.dto.StoreRequestDto;
-import study.deliveryhanghae.domain.store.dto.StoreResponseDto;
+import study.deliveryhanghae.domain.store.dto.StoreRequestDto.CreateStoreDto;
+import study.deliveryhanghae.domain.store.dto.StoreRequestDto.UpdateStoreDto;
+import study.deliveryhanghae.domain.store.dto.StoreResponseDto.GetStoreDto;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
 import study.deliveryhanghae.domain.store.service.StoreService;
 import study.deliveryhanghae.global.config.security.UserDetailsImpl;
@@ -29,7 +29,7 @@ import java.util.List;
 public class StoreController {
 
     private final StoreService storeService;
-    private final ObjectMapper objectMapper;
+
 
     //유저 메인페이지
     @GetMapping("/v1")
@@ -52,10 +52,10 @@ public class StoreController {
     // 선택한 상점 들어가기
     @GetMapping("/v1/{storeId}")
     public String getStore(@PathVariable Long storeId, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String storeName = storeService.getStore(storeId).storeName();
-        List<StoreResponseDto.GetMenuList> menuLists = storeService.getStore(storeId).menuLists();
-        model.addAttribute("storeName", storeService.getStore(storeId).storeName());
-        model.addAttribute("menuList", storeService.getStore(storeId).menuLists());
+
+        GetStoreDto storeMenuList = storeService.getStore(storeId);
+        model.addAttribute("store", storeMenuList);
+
         if (userDetails == null) {
             model.addAttribute("userDetails", "USER_NOT_LOGIN");
 
@@ -66,7 +66,6 @@ public class StoreController {
     }
 
 
-
     /***
      * 여기서 부터 사장님 페이지 입니다
      */
@@ -74,10 +73,9 @@ public class StoreController {
     @PostMapping("/v2/store")
     public String createOwnerStore(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                    @RequestPart("file") MultipartFile file,
-                                   @RequestPart("request")String jsonData,
+                                   @RequestPart("request") CreateStoreDto requestDto,
                                    Model model) {
         try {
-            StoreRequestDto.Create requestDto = objectMapper.readValue(jsonData, StoreRequestDto.Create.class);
             storeService.createOwnerStore(requestDto, userDetails.getUser().getId(), file);
         } catch (BusinessException ex) {
             model.addAttribute("ErrorCode", ex.getErrorCode().getStatus());
@@ -92,10 +90,8 @@ public class StoreController {
     @GetMapping("/v2/store")
     public String getOwnerStore(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
 
-        String storeName = storeService.getOwnerStore(userDetails.getUser().getId()).storeName();
-        List<StoreResponseDto.GetMenuList> menuLists = storeService.getOwnerStore(userDetails.getUser().getId()).menuLists();
-        model.addAttribute("storeName", storeName);
-        model.addAttribute("menuList", menuLists);
+        GetStoreDto storeMenuList = storeService.getOwnerStore(userDetails.getUser().getId());
+        model.addAttribute("store", storeMenuList);
 
         return "ownerStore";
     }
@@ -104,9 +100,8 @@ public class StoreController {
     @PutMapping("/v2/store")
     public String updateOwnerStore(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                    @RequestPart("file") MultipartFile file,
-                                   @RequestPart("request")String jsonData,
+                                   @RequestPart("request") UpdateStoreDto requestDto,
                                    Model model) throws IOException {
-        StoreRequestDto.Update requestDto = objectMapper.readValue(jsonData, StoreRequestDto.Update.class);
         // 임시로 id 뽑는 걸로 변경하여 ownerId 보내주고 있습니다.
         // security 적용 후 변경 칠요
         Long ownerId = 1L;
@@ -131,7 +126,8 @@ public class StoreController {
 
     @Operation(summary = "패스워드 확인", description = "가게 삭제시 패스워드 확인을 받습니다.")
     @PostMapping("/v2/store/password-check")
-    public ResponseEntity<Boolean> checkPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody String enteredPassword) {
+    public ResponseEntity<Boolean> checkPassword(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                 @RequestBody String enteredPassword) {
         enteredPassword.replaceFirst("password=", "");
 
         // 서비스로부터 비밀번호 일치 여부 확인 후 반환
