@@ -23,12 +23,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private int number;
-
-    @GetMapping("favicon.ico")
-    @ResponseBody
-    public void returnNoFavicon() {
-    }
 
     @GetMapping("/v1/signup")
     public String signupPage(Model model) {
