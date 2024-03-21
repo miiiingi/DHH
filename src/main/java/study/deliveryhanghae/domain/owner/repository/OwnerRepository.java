@@ -11,4 +11,6 @@ public interface OwnerRepository extends JpaRepository<Owner,Long> {
     Optional<Owner> findByEmail(String username);
     @Query("SELECT o.point FROM Owner o WHERE o.id = ?1")
     Integer findPointById(Long id);
+
+    boolean existsByEmail(String username);
 }

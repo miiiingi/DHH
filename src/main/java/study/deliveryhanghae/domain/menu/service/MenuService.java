@@ -9,6 +9,7 @@ import study.deliveryhanghae.domain.menu.dto.MenuRequestDto.CreateMenuDto;
 import study.deliveryhanghae.domain.menu.dto.MenuRequestDto.UpdateMenuDto;
 import study.deliveryhanghae.domain.menu.entity.Menu;
 import study.deliveryhanghae.domain.menu.repository.MenuRepository;
+import study.deliveryhanghae.domain.owner.entity.Owner;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.GetMenuListDto;
 import study.deliveryhanghae.domain.store.entity.Store;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
@@ -33,9 +34,9 @@ public class MenuService {
 
     // 메뉴 추가
     @Transactional
-    public void createMenu(CreateMenuDto requestDto, Long ownerId) throws IOException {
+    public void createMenu(CreateMenuDto requestDto, Owner owner) throws IOException {
         // owner 정보에서 가게 정보 뽑기
-        Store store = getStoreByOwner(ownerId);
+        Store store = getStoreByOwner(owner);
 
         MultipartFile file = requestDto.menuImg();
         String originFileName = file.getOriginalFilename(); // img 원본 이름
@@ -46,9 +47,9 @@ public class MenuService {
         menuRepository.save(menu);
     }
 
-    public GetMenuListDto getMenu(Long id, Long ownerId) {
+    public GetMenuListDto getMenu(Long id, Owner owner) {
         // 유저의 가게 가져오기
-        Store store = getStoreByOwner(ownerId);
+        Store store = getStoreByOwner(owner);
 
         // user store id 와 menu store id 비교
         Long storeId = store.getId();
@@ -95,8 +96,8 @@ public class MenuService {
     }
 
     // 유저 가게 정보 확인
-    private Store getStoreByOwner(Long ownerId) {
-        return storeRepository.findByOwnerId(ownerId);
+    private Store getStoreByOwner(Owner owner) {
+        return storeRepository.findByOwner(owner);
     }
 
     // 존재하는 메뉴인지 확인
