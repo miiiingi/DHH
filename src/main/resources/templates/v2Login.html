@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <meta charset="UTF-8">
+    <title>로그인 페이지</title>
+</head>
+<body>
+<div id="login-form">
+    <div id="login-title">Log into Delivery Hanghae</div>
+    <br>
+    <div>
+        <div class="login-id-label">이메일</div>
+        <input type="text" name="email" id="email" class="login-input-box">
+
+        <div class="login-id-label">비밀번호</div>
+        <input type="password" name="password" id="password" class="login-input-box">
+
+        <div>
+
+        </div>
+        <button id="login-id-submit" onclick="onLogin()">로그인</button>
+        <button id="login-id-btn" onclick="location.href='/v2/signup'">
+            회원 가입하기
+        </button>
+    </div>
+    <!-- 에러 메시지를 동적으로 생성할 div -->
+    <div id="login-failed" style="display:none; color:red;"></div>
+</div>
+</body>
+<script>
+    $(document).ready(function () {
+        // 토큰 삭제
+        Cookies.remove('Authorization', {path: '/'});
+    });
+
+    const host = 'http://' + window.location.host;
+    console.log(host)
+
+    function onLogin() {
+        let email = $('#email').val();
+        let password = $('#password').val();
+
+        $.ajax({
+            type: "POST",
+            url: `/v2/login`,
+            contentType: "application/json",
+            data: JSON.stringify({email: email, password: password}),
+
+        })
+            .done(function (res, status, xhr) {
+                const token = xhr.getResponseHeader('Authorization');
+
+                Cookies.set('Authorization', token, {path: '/'});
+
+                $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                    jqXHR.setRequestHeader('Authorization', token);
+                });
+
+                const redirect = getParameterByName('redirect');
+                if (redirect) {
+                    window.location.href = host + redirect;
+                } else {
+                    window.location.href = host + '/v2';
+                }
+            })
+            .fail(function (jqXHR, textStatus) {
+                const errorDiv = document.getElementById('login-failed');
+                errorDiv.innerText = jqXHR.responseJSON.ErrorMessage;
+                errorDiv.style.display = 'block';
+                $('#email').val('');
+                $('#password').val('');
+
+            });
+    }
+
+    function getParameterByName(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+</script>
+</html>
