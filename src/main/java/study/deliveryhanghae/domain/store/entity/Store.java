@@ -23,20 +23,45 @@ public class Store {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
+    @Column(name = "business_number", nullable = false)
+    private String businessNumber;
+
+    @Column(name = "address", nullable = false)
+    private String address;
+
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Menu> menuList = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name ="owner_id")
     private Owner owner;
 
+    @Column(nullable = false)
+    private String originFileName;
+
+    @Column(nullable = false)
+    private String imageUrl;
+
     @Builder
-    public Store(String name, String imageUrl) {
+    public Store(String name, String businessNumber, String address, String description, Owner owner, String imageUrl, String originFileName) {
         this.name = name;
+        this.businessNumber = businessNumber;
+        this.address = address;
+        this.description = description;
         this.imageUrl = imageUrl;
+        this.originFileName = originFileName;
+        this.owner = owner;
+    }
+
+    public void update(String name, String imageUrl, String address, String description, String originFileName) {
+        this.name = name;
+        this.originFileName = originFileName;
+        this.imageUrl = imageUrl;
+        this.address = address;
+        this.description = description;
     }
 
 }

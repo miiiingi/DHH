@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Deliever_Hang_Hae</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+
+<body>
+
+<div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+    <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button"
+            aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)">
+        <svg class="bi my-1 theme-icon-active" width="1em" height="1em">
+            <use href="#circle-half"></use>
+        </svg>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light"
+                    aria-pressed="false">
+                <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                    <use href="#sun-fill"></use>
+                </svg>
+                Light
+                <svg class="bi ms-auto d-none" width="1em" height="1em">
+                    <use href="#check2"></use>
+                </svg>
+            </button>
+        </li>
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark"
+                    aria-pressed="false">
+                <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                    <use href="#moon-stars-fill"></use>
+                </svg>
+                Dark
+                <svg class="bi ms-auto d-none" width="1em" height="1em">
+                    <use href="#check2"></use>
+                </svg>
+            </button>
+        </li>
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto"
+                    aria-pressed="true">
+                <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                    <use href="#circle-half"></use>
+                </svg>
+                Auto
+                <svg class="bi ms-auto d-none" width="1em" height="1em">
+                    <use href="#check2"></use>
+                </svg>
+            </button>
+        </li>
+    </ul>
+</div>
+
+
+<header data-bs-theme="dark">
+    <!-- nav -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container">
+            <a th:href="@{/v2/store}" class="navbar-brand d-flex align-items-center">
+                <img th:src="@{/images/logo.png}" width="200em" height="auto" alt="">
+            </a>
+                <a class="btn" href="javascript:logout()">로그아웃</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/v2/store}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Features</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+<main>
+
+    <h1></h1>
+
+
+    <section class="py-5 text-center container">
+        <!-- 가게 정보        -->
+        <div class="d-flex flex-column flex-md-row p-2 gap-4 py-md-5 align-items-center justify-content-center">
+            <div class="position-static d-flex flex-column flex-lg-row align-items-stretch justify-content-start p-5 rounded-3 shadow-lg"
+                 data-bs-theme="light">
+                <nav class="col-lg-10">
+                    <ul class="list-unstyled d-flex flex-column gap-2 text text-center">
+                        <li>
+                            <div>
+                                <strong class="d-block" name="storeName" th:text="${storeName}">가게 이름</strong>
+<!--                                <img src=@{${storeUrl}} class="rounded mx-auto d-block" alt="가게 썸네일" width="200px" height="200px" >-->
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <strong class="d-block">가게 소개</strong>
+<!--                                <small th:text="${storeDesc}"></small>-->
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- 모달 연결 버틍-->
+        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#createMenu">메뉴추가하기</button>
+        <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modifyStore">가게 정보 수정하기</button>
+    </section>
+
+
+    <!-- 메뉴 추가 모달 -->
+    <div class="modal fade" id="createMenu" tabindex="-1" aria-labelledby="menuModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="menuModalLabel">메뉴 등록</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/v2/menu}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="menuImg" class="col-form-label">사진</label>
+                            <input type="file" class="form-control" id="menuImg" name="menuImg">
+                        </div>
+                        <div class="mb-3">
+                            <label for="menuName" class="col-form-label">메뉴명</label>
+                            <input type="text" class="form-control" id="menuName" name="menuName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="menuDesc" class="col-form-label">메뉴설명</label>
+                            <input type="text" class="form-control" id="menuDesc" name="menuDesc">
+                        </div>
+                        <div class="mb-3">
+                            <label for="menuPrice" class="col-form-label">메뉴가격</label>
+                            <input class="form-control" id="menuPrice" name="menuPrice">
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary">추가</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 가게 정보 수정 모달 -->
+    <div class="modal fade" id="modifyStore" tabindex="-1" aria-labelledby="exampleModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModal">가게 정보 수정</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="request">
+                        <div class="mb-3">
+                            <label for="file" class="col-form-label">가게 썸네일</label>
+                            <input type="file" class="form-control" id="file" multiple="multiple">
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="col-form-label">가게 이름</label>
+                            <span class="form-control" id="name" th:text="${storeName}"> </span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="col-form-label">가게 주소</label>
+                            <textarea class="form-control" id="address"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="col-form-label">가게 설명</label>
+                            <textarea class="form-control" id="description"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-primary" onclick="uploadData()">수정</button>
+                        <button type="button" class="btn btn-primary" onclick="deleteData()">삭제</button>
+                        <div id="message"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메뉴 목록 -->
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+                <div class="col">
+                    <div class="card mb-3" style="max-width: 540px;" th:each="menu : ${menuList}">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <!--                                <img th:src="@{${menu.menuUrl()}}" th:id="img_ + ${menu.menuId()}" class="img-fluid rounded-start" width="225" height="100%">-->
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:id="name_ + ${menu.menuId}" th:text="${menu.menuName()}">
+                                        메뉴이름</h5>
+                                    <p class="card-text" th:id="desc_ + ${menu.menuId}"
+                                       th:text="${menu.menuDescription()}">메뉴설명</p>
+                                    <p class="card-text" th:id="price_ + ${menu.menuId}" th:text="${menu.menuPrice()}">
+                                        메뉴가격</p>
+                                </div>
+                                <div class="card-body">
+                                    <!-- 링크 연결-->
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            th:attr="data-menuId=${menu.menuId}"
+                                            onclick="editMenu(this.getAttribute('data-menuId'))">메뉴 상세
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 비밀번호 입력 모달 -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal">비밀번호 입력</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="password" id="passwordInput" class="form-control" placeholder="비밀번호 입력">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="checkPassword()">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+<script>
+    const host = 'http://' + window.location.host;
+
+    $(document).ready(function () {
+        const auth = getToken();
+        if (auth) {
+            $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                jqXHR.setRequestHeader('Authorization', auth);
+            });
+        } else {
+            // 유저 정보 없으면 login page로 redirect
+            window.location.href = host + '/login-page';
+            return;
+        }
+    });
+
+    // 가게 삭제시 비밀번호 확인
+    function deleteData() {
+        // 비밀번호 입력 모달 보이기
+        $('#passwordModal').modal('show');
+    }
+
+    function checkPassword() {
+        // 입력한 비밀번호 가져오기
+        const enteredPassword = document.getElementById('passwordInput').value;
+        console.log(enteredPassword)
+
+
+        // AJAX를 사용하여 서버에 비밀번호 확인 요청 보내기
+        $.ajax({
+            url: '/v2/store/password-check', // 비밀번호 확인을 위한 서버 경로
+            type: 'POST',
+            dataType: 'text',
+            data: {password: enteredPassword},
+            success: function (match) {
+                if (match) {
+                    // 비밀번호가 일치하는 경우 가게 정보 삭제 요청 보내기
+                    deleteStore();
+                } else {
+                    // 비밀번호가 일치하지 않는 경우 메시지 출력
+                    alert('비밀번호가 일치하지 않습니다. 다시 입력해주세요.');
+                    // 입력 필드 초기화
+                    document.getElementById('passwordInput').value = '';
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    // 가게 삭제 script
+    function deleteStore() {
+        // DELETE 요청 보내기
+        $.ajax({
+            url: '/v2/store', // 삭제할 가게 정보의 경로
+            type: 'DELETE',
+            success: function (response) {
+                // 삭제 성공 메시지 출력
+                alert('가게 정보가 삭제되었습니다.');
+                window.location.replace('/v2');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                // 실패 메시지 출력
+                alert('가게 정보 삭제에 실패했습니다.');
+            }
+        });
+    }
+
+    //가게 수정 script
+    function uploadData() {
+
+        console.log("submit clicked")
+
+        let file = $('#file')[0].files[0];
+
+        const name = document.getElementById('name').value;
+        const address = document.getElementById('address').value;
+        const description = document.getElementById('description').value;
+
+        const jsonData = {
+            "name": name,
+            "address": address,
+            "description": description
+        };
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('request', JSON.stringify(jsonData));
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', '/v2/store', true);
+
+        console.log(jsonData)
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                alert("가게 수정에 성공하셨습니다.")
+                window.location.replace('/v2/store');
+            } else {
+                document.getElementById('message').innerHTML = 'Failed to upload data.';
+            }
+        };
+
+        xhr.send(formData);
+    }
+
+
+    // 메뉴 수정 클릭시 해당 페이지 이동
+    function editMenu(menuId) {
+        console.log(menuId)
+        window.location.href = host + '/v2/menu/' + menuId;
+    }
+
+
+    //쿠키에서 토큰 가져오기
+    function getToken() {
+        let auth = Cookies.get('Authorization');
+        console.log(auth);
+        if (auth === undefined) {
+            return '';
+        }
+        return auth;
+    }
+
+    function logout() {
+        // 로그아웃 하고 redirect 페이지 사장님 로그인 페이지로 이동해야함
+        // 토큰 삭제
+        Cookies.remove('Authorization', {path: '/'});
+        window.location.href = host + '/';
+    }
+</script>
+
+
+</body>
+
+</html>

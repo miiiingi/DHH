@@ -21,7 +21,7 @@ public class OrderController {
 
         model.addAttribute("responseDto", responseDto);
 
-        return "payment";
+        return "order";
     }
 
     @PostMapping("/v1/orders/payment")
