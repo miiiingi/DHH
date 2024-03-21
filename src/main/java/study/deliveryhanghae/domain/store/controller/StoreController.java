@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import study.deliveryhanghae.domain.owner.entity.Owner;
 import study.deliveryhanghae.domain.store.dto.StoreRequestDto;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
@@ -67,20 +66,10 @@ public class StoreController {
     }
 
 
+
     /***
      * 여기서 부터 사장님 페이지 입니다
      */
-
-    // 해당부분 잠시 sccurity로 구분되기 전까지 주석처리 해두겠습니다!
-    @Operation(summary = "메인페이지/가게 등록 페이지", description = "storeStatus를 확인해 true면 메인페이지로, false면 가게 등록 페이지로 이동")
-    @GetMapping("/v2")
-    private String ownerStore(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        if (userDetails.getUser().isStoreStatuS() == false) {
-//            return "storeRegister";
-//        }
-        return "owner";
-    }
-
     @Operation(summary = "가게 등록", description = "가게 등록시 필요한 정보를 입력한 뒤 메인페이지로 이동합니다.")
     @PostMapping("/v2/store")
     public String createOwnerStore(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -150,6 +139,5 @@ public class StoreController {
         log.info(String.valueOf(check));
         return ResponseEntity.ok(check);
     }
-
 
 }

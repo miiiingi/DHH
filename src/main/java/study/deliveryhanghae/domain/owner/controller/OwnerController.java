@@ -2,22 +2,22 @@ package study.deliveryhanghae.domain.owner.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import study.deliveryhanghae.domain.order.dto.OrderResponseDto.getOrderDto;
 import study.deliveryhanghae.domain.order.service.OrderService;
 import study.deliveryhanghae.domain.owner.dto.OwnerRequestDto;
 import study.deliveryhanghae.domain.owner.service.OwnerService;
+import study.deliveryhanghae.global.config.security.UserDetailsImpl;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/v2")
 @RequiredArgsConstructor
 public class OwnerController {
     private final OrderService orderService;
@@ -53,14 +53,18 @@ public class OwnerController {
         return "redirect:/v2/login-page";
     }
 
-
     /***
      *  사장님 메인 페이지 이동
+     * 
      * @param model
      * @return
      */
-    @GetMapping
-    public String getOwnerMain(Model model){
+    @GetMapping("/v2")
+    public String getOwnerMain(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        // 사장님 가게 가지고 있는 상태 확인하고 없으면 생성하도록 반환
+//        if (userDetails.getUser().isStoreStatus() == false) {
+//            return "storeRegister";
+//        }
         List<getOrderDto> orderList=orderService.getOrderList();
 
         model.addAttribute("orderList",orderList);
