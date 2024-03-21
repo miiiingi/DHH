@@ -1,12 +1,11 @@
 package study.deliveryhanghae.global.config.security;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,36 +18,43 @@ import study.deliveryhanghae.global.config.security.jwt.JwtAuthenticationFilter;
 import study.deliveryhanghae.global.config.security.jwt.JwtAuthorizationFilter;
 import study.deliveryhanghae.global.config.security.jwt.JwtUtil;
 
-//@Configuration
-//@EnableWebSecurity
-//@EnableMethodSecurity(securedEnabled = true)
+@Configuration
+@EnableWebSecurity
 public class WebSecurityConfig {
+
+    String[] APP_WHITE_LIST = {"/v2/login-page", "/v2/login", "/v2/signup", "/v1/login", "/v1/signup", "/signup", "/favicon.ico"};
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
-    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl adminDetailsService, AuthenticationConfiguration authenticationConfiguration, CustomAccessDeniedHandler customAccessDeniedHandler, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
+    @Autowired
+    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration) {
         this.jwtUtil = jwtUtil;
-        this.userDetailsService = adminDetailsService;
+        this.userDetailsService = userDetailsService;
         this.authenticationConfiguration = authenticationConfiguration;
-        this.customAccessDeniedHandler = customAccessDeniedHandler;
-        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+    }
+
+
+    public JwtAuthenticationFilter ownerLoginFilter() throws Exception {
+        JwtAuthenticationFilter ownerFilter = new JwtAuthenticationFilter(jwtUtil);
+        // owner Login 링크 연결
+        ownerFilter.setFilterProcessesUrl("/v2/login");
+        ownerFilter.setAuthenticationManager(authenticationManager());
+        return ownerFilter;
+    }
+
+    public JwtAuthenticationFilter userLoginFilter() throws Exception {
+        JwtAuthenticationFilter userFilter = new JwtAuthenticationFilter(jwtUtil);
+        // user Login 링크 연결
+        userFilter.setFilterProcessesUrl("/login");
+        userFilter.setAuthenticationManager(authenticationManager());
+        return userFilter;
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
-        filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
-        return filter;
+    public AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
@@ -73,32 +79,23 @@ public class WebSecurityConfig {
         };
     }
 
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-        http.csrf(AbstractHttpConfigurer::disable);
-
-        http.sessionManagement((sessionManagement) ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        );
-
-        http.authorizeHttpRequests((authorizeHttpRequests) ->
-                authorizeHttpRequests
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/**").permitAll()
-                        .requestMatchers("/orders/").hasAuthority("ROLE_USER")
-                        .anyRequest().authenticated()
-        );
-
-        http.exceptionHandling((e) -> e.accessDeniedHandler(customAccessDeniedHandler));
-        http.exceptionHandling((e) -> e.authenticationEntryPoint(customAuthenticationEntryPoint));
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers(APP_WHITE_LIST).permitAll()
+                        .requestMatchers("/v1/**").permitAll()
+                        .anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
+        http.addFilterBefore(ownerLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(userLoginFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 
 }

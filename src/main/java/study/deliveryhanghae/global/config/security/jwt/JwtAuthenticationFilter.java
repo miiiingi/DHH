@@ -10,10 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import study.deliveryhanghae.domain.user.dto.UserRequestDto;
-import study.deliveryhanghae.domain.user.dto.UserRequestDto.LoginRequestRecord;
-import study.deliveryhanghae.domain.user.entity.UserRoleEnum;
-import study.deliveryhanghae.global.config.security.UserDetailsImpl;
+import study.deliveryhanghae.domain.user.dto.UserRequestDto.*;
+import study.deliveryhanghae.global.config.security.owner.OwnerDetailsImpl;
+import study.deliveryhanghae.global.config.security.user.UserDetailsImpl;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
@@ -25,7 +24,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        setFilterProcessesUrl("/login");
     }
 
     @Override
@@ -49,10 +47,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("로그인 성공 및 JWT 생성");
-        String email = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
-        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getAuthority();
 
-        String token = jwtUtil.createToken(email, role);
+        String email = "";
+
+        if (authResult.getPrincipal() instanceof OwnerDetailsImpl) {
+            email = ((OwnerDetailsImpl) authResult.getPrincipal()).getUsername();
+        } else if (authResult.getPrincipal() instanceof UserDetailsImpl) {
+            email = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
+        }
+
+        String token = jwtUtil.createToken(email);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
     }
