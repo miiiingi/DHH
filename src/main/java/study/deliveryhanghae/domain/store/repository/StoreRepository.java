@@ -8,6 +8,11 @@ import java.util.List;
 
 public interface StoreRepository extends JpaRepository<Store,Long> {
 
+
     List<Store> findByMenuListNameContaining(String menuName);
+
+    Store findByOwnerId(Long id);
+
+    void deleteByOwner(Owner owner);
 
 }
