@@ -37,6 +37,6 @@ public class User {
     }
 
     public void updatePoint(int point) {
-        this.point = point;
+        this.point += point;
     }
 }
