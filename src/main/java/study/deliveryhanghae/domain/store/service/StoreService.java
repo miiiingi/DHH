@@ -72,8 +72,7 @@ public class StoreService {
     public void createOwnerStore(CreateStoreDto requestDto, Owner owner, MultipartFile file) throws IOException {
 
         String s3FileName = UUID.randomUUID() + file.getOriginalFilename();
-        URL url = s3Client.getUrl(bucket, s3FileName);
-        String s3UrlText = "" + url;
+        String s3UrlText = s3Client.getUrl(bucket, s3FileName).toString();
         s3Service.upload(file, s3FileName);
         Owner ownerDB = ownerRepository.getReferenceById(owner.getId());
         ownerDB.hasStore();
