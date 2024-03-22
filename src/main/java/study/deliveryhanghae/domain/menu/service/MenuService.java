@@ -48,6 +48,7 @@ public class MenuService {
         String originFileName = file.getOriginalFilename(); // img 원본 이름
         String s3FileName = UUID.randomUUID() + originFileName;
         String s3UrlText = s3Client.getUrl(bucket, s3FileName).toString();
+        s3Service.delete(s3FileName);
         s3Service.upload(file, s3FileName);
         Menu menu = requestDto.toEntity(store, s3UrlText, originFileName);
 
@@ -82,13 +83,13 @@ public class MenuService {
         // 메뉴 존재하는지 확인
         Menu menu = hasMenu(id);
         String previousS3UrlText = menu.getImageUrl();
-        String[] pathParts = previousS3UrlText.split("/");
-        String previousS3FileName = pathParts[pathParts.length - 1];
-        s3Service.delete(previousS3FileName);
+        String keyName = previousS3UrlText.substring(previousS3UrlText.lastIndexOf("/") + 1);
+        s3Service.delete(keyName);
 
         if(menuImg != null){
             String originFileName = menuImg.getOriginalFilename(); // img 원본 이름
             String s3FileName = UUID.randomUUID() + originFileName;
+            s3Service.upload(menuImg, s3FileName);
             String s3UrlText = s3Client.getUrl(bucket, s3FileName).toString();
             menu.imgUpdate(s3UrlText, originFileName);
         }

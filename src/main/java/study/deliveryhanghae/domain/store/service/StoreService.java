@@ -3,6 +3,7 @@ package study.deliveryhanghae.domain.store.service;
 import com.amazonaws.services.s3.AmazonS3;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j(topic = "storeService")
 @RequiredArgsConstructor
 public class StoreService {
     private final StoreRepository storeRepository;
@@ -100,16 +102,17 @@ public class StoreService {
     // 사장님 가게 정보 수정
     @Transactional
     public void updateOwnerStore(Owner owner, UpdateStoreDto requestDto, MultipartFile file) throws IOException {
-
-        //  이전 가게 이미지 삭제
+//
+//        //  이전 가게 이미지 삭제
         Store store = storeRepository.findByOwner(owner);
         String previousS3UrlText = store.getImageUrl();
-        String[] pathParts = previousS3UrlText.split("/");
-        String previousS3FileName = pathParts[pathParts.length - 1];
-        s3Service.delete(previousS3FileName);
+        log.info(previousS3UrlText);
+        String keyName = previousS3UrlText.substring(previousS3UrlText.lastIndexOf("/") + 1);
+        s3Service.delete(keyName);
 
         //  새로운 가게 이미지 등록
         String s3FileName = UUID.randomUUID() + file.getOriginalFilename();
+        s3Service.upload(file, s3FileName);
         String s3UrlText = s3Client.getUrl(bucket, s3FileName).toString();
         store.update(requestDto.name(),
                 s3UrlText,
