@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,10 +12,12 @@
 <header class="header">
     <!-- <h1 class="logo">Brand</h1> -->
     <div class="header-left">
-        <img src="./images/logo.png" class="logo" />
+        <a th:href="@{/v1}">
+        <img th:src="@{/images/logo.png}" class="logo" />
+        </a>
     </div>
     <div class="header-center" >
-        <form class="input-form" th:action="@{/search}" method="get">
+        <form class="input-form" th:action="@{/v1/search}" method="get">
             <input
                     class="input"
                     type="search"
@@ -27,9 +29,9 @@
     </div>
     <div class="header-right">
         <nav class="menu">
-            <span class="menu-button" id="home-btn">HOME</span>
-            <span class="menu-button" id="login-btn">LOGIN</span>
-            <span class="menu-button" id="pay-btn">PAY</span>
+            <a th:href="@{/v1}" class="menu-button" id="home-btn">HOME</a>
+            <a th:href="@{/v1/login}" class="menu-button" id="login-btn">LOGIN</a>
+            <a  class="menu-button" id="pay-btn">PAY</a>
         </nav>
     </div>
 </header>
@@ -59,5 +61,42 @@
 
     </div>
 </main>
+
+<script>
+    const host = 'http://' + window.location.host;
+
+    $(document).ready(function () {
+        const auth = getToken();
+        if (auth) {
+
+            $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                jqXHR.setRequestHeader('Authorization', auth);
+            });
+        } else {
+
+            // 유저 정보 없으면 login page로 redirect
+            window.location.href = host + '/login';
+            return;
+        }
+    });
+
+
+    function getToken() {
+        let auth = Cookies.get('Authorization');
+        console.log(auth);
+        if (auth === undefined) {
+            return '';
+        }
+        return auth;
+    }
+
+    function logout() {
+        // 로그아웃 하고 redirect 페이지 사장님 로그인 페이지로 이동해야함
+        // 토큰 삭제
+        Cookies.remove('Authorization', {path: '/'});
+        window.location.href = host + '/v2/login-page';
+    }
+</script>
+
 </body>
 </html>
