@@ -123,7 +123,7 @@ public class StoreService {
 
         ownerDB.deleteStore();
 
-        storeRepository.deleteByOwner(ownerDB);
+        storeRepository.deleteAllInBatchByOwner(ownerDB);
 
     }
 

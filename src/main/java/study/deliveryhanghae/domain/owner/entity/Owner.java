@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
+@Table(indexes = @Index(name = "idx_owner_email", columnList = "email", unique = true))
 public class Owner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -74,8 +74,13 @@
 <div class="content">
     <h2>사장님 잔액: <span th:text="${mainResponseDto.ownersPoint}"></span></h2>
 </div>
-<div class="content">
-    <table>
+
+    <div th:if="${mainResponseDto == null or mainResponseDto.orderList == null}">
+        주문이 없습니다.
+    </div>
+    <div th:if="${mainResponseDto != null and mainResponseDto.orderList != null}">
+        <table>
+
         <thead>
         <tr>
             <th>주문번호</th>
@@ -87,11 +92,10 @@
         </thead>
         <tbody>
         <tr th:each="order : ${mainResponseDto.orderList}">
-            <td th:text="${order.orderId}"></td> <!-- 주문 ID 출력 -->
-            <td th:text="${order.createdAt}"></td> <!-- 주문 생성 일자 및 시간 출력 -->
-            <td th:text="${order.menuName}"></td> <!-- 주문한 메뉴의 이름 출력 -->
-            <td id="status_${order.orderId}" th:text="${order.orderStatus}"></td> <!-- 주문 상태 출력 -->
-            <!-- 주문 상태가 '배달 완료'가 아닌 경우에만 배달 완료 버튼을 출력 -->
+            <td th:text="${order.orderId}"></td>
+            <td th:text="${order.createdAt}"></td>
+            <td th:text="${order.menuName}"></td>
+            <td id="status_${order.orderId}" th:text="${order.orderStatus}"></td>
             <td th:unless="${order.orderStatus == '배달 완료'}">
                 <form th:action="@{'/v2/deliverys/' + ${order.orderId}}" method="post">
                     <button type="submit">배달완료</button>
@@ -100,9 +104,11 @@
         </tr>
         </tbody>
     </table>
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+
 </body>
 </html>
