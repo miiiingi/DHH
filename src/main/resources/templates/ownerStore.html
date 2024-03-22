@@ -104,7 +104,7 @@
                     <ul class="list-unstyled d-flex flex-column gap-2 text text-center">
                         <li>
                             <div>
-                                <strong class="d-block" name="storeName" th:text="${store.storeName()}">가게 이름</strong>
+                                <strong class="d-block" th:text="${store.storeName()}">가게 이름</strong>
 <!--                                <img src=@{${storeUrl}} class="rounded mx-auto d-block" alt="가게 썸네일" width="200px" height="200px" >-->
                             </div>
                         </li>
@@ -174,7 +174,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="name" class="col-form-label">가게 이름</label>
-                            <span class="form-control" id="name" th:text="${storeName}"> </span>
+                            <input class="form-control" id="name">
                         </div>
                         <div class="mb-3">
                             <label for="address" class="col-form-label">가게 주소</label>
@@ -268,6 +268,45 @@
         }
     });
 
+    //가게 수정 script
+    function uploadData() {
+
+        console.log("submit clicked")
+
+        let file = $('#file')[0].files[0];
+
+        let name = $('#name').val();
+        let address = $('#address').val();
+        let description = $('#description').val();
+
+        let jsonData = {
+            name: name,
+            address: address,
+            description: description
+        };
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('request', new Blob([JSON.stringify((jsonData))],{type: "application/json"}));
+
+
+        $.ajax({
+            type: "PUT",
+            url: '/v2/store',
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function(response){
+                alert("성공");
+                window.location.href = "/v2/store";
+            },
+            error: function(request, status, error){
+                alert(error)
+            }
+        });
+
+    }
+
     // 가게 삭제시 비밀번호 확인
     function deleteData() {
         // 비밀번호 입력 모달 보이기
@@ -322,43 +361,7 @@
         });
     }
 
-    //가게 수정 script
-    function uploadData() {
 
-        console.log("submit clicked")
-
-        let file = $('#file')[0].files[0];
-
-        const name = document.getElementById('name').value;
-        const address = document.getElementById('address').value;
-        const description = document.getElementById('description').value;
-
-        const jsonData = {
-            "name": name,
-            "address": address,
-            "description": description
-        };
-
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('request', JSON.stringify(jsonData));
-
-        const xhr = new XMLHttpRequest();
-        xhr.open('PUT', '/v2/store', true);
-
-        console.log(jsonData)
-
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                alert("가게 수정에 성공하셨습니다.")
-                window.location.replace('/v2/store');
-            } else {
-                document.getElementById('message').innerHTML = 'Failed to upload data.';
-            }
-        };
-
-        xhr.send(formData);
-    }
 
 
     // 메뉴 수정 클릭시 해당 페이지 이동

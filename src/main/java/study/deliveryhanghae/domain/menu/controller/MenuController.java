@@ -32,36 +32,37 @@ public class MenuController {
     // 메뉴 등록
     @Operation(summary = "가게 메뉴 등록", description = "가게 메뉴를 추가한 뒤 메인페이지로 이동합니다.")
     @PostMapping("/v2/menu")
-    public String createMenu(@ModelAttribute CreateMenuDto requestDto, @AuthenticationPrincipal OwnerDetailsImpl userDetails){
+    public String createMenu(@ModelAttribute CreateMenuDto requestDto, @AuthenticationPrincipal OwnerDetailsImpl userDetails) {
         // 유저 정보에서 가게 정보 가져오기
         try {
             menuService.createMenu(requestDto, userDetails.getOwner());
             return "redirect:/v2/store";
-        }catch (BusinessException e) {
+        } catch (BusinessException e) {
             throw new BusinessException(ErrorCode.INVALID_INPUT_VALUE);
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Operation(summary = "선택 메뉴 상세 페이지 이동", description = "선택한 메뉴의 상세페이지로 이동합니다.")
     @GetMapping("/v2/menu/{id}")
-    public String getMenu(@PathVariable Long id, Model model, @AuthenticationPrincipal OwnerDetailsImpl userDetails){
+    public String getMenu(@PathVariable Long id, Model model, @AuthenticationPrincipal OwnerDetailsImpl userDetails) {
         GetMenuListDto menu = menuService.getMenu(id, userDetails.getOwner());
-        model.addAttribute("menu",menu);
+        model.addAttribute("menu", menu);
         return "menuDetail";
     }
 
     @Operation(summary = "메뉴의 내용 수정", description = "메뉴의 내용을 수정합니다.")
     @PutMapping("/v2/menu/{id}")
     @ResponseBody
-    public ResponseEntity<String> updateMenu(@PathVariable Long id, @RequestPart(value="key") UpdateMenuDto requestDto,
-                             @RequestPart(value = "menuImg", required = false) MultipartFile menuImg) throws IOException {
-        try{
-            menuService.updateMenu( id, requestDto,menuImg);
+    public ResponseEntity<String> updateMenu(@PathVariable Long id,
+                                             @RequestPart(value = "key") UpdateMenuDto requestDto,
+                                             @RequestPart(value = "menuImg", required = false) MultipartFile menuImg) throws IOException {
+        try {
+            menuService.updateMenu(id, requestDto, menuImg);
             String message = "수정이 완료되었습니다.";
             return ResponseEntity.status(HttpStatus.CREATED).body(message);
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
@@ -69,7 +70,7 @@ public class MenuController {
     @Operation(summary = "메뉴를 삭제합니다.", description = "메뉴를 삭제합니다.")
     @DeleteMapping("/v2/menu/{id}")
     @ResponseBody
-    public String deleteMenu(@PathVariable Long id){
+    public String deleteMenu(@PathVariable Long id) {
         menuService.deleteMenu(id);
         String message = "정상적으로 삭제되었습니다.";
         return message;
