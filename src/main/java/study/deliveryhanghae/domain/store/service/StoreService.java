@@ -73,6 +73,7 @@ public class StoreService {
 
         String s3FileName = UUID.randomUUID() + file.getOriginalFilename();
         String s3UrlText = s3Client.getUrl(bucket, s3FileName).toString();
+        s3Service.delete(s3FileName);
         s3Service.upload(file, s3FileName);
         Owner ownerDB = ownerRepository.getReferenceById(owner.getId());
         ownerDB.hasStore();
@@ -100,10 +101,16 @@ public class StoreService {
     @Transactional
     public void updateOwnerStore(Owner owner, UpdateStoreDto requestDto, MultipartFile file) throws IOException {
 
+        //  이전 가게 이미지 삭제
         Store store = storeRepository.findByOwner(owner);
+        String previousS3UrlText = store.getImageUrl();
+        String[] pathParts = previousS3UrlText.split("/");
+        String previousS3FileName = pathParts[pathParts.length - 1];
+        s3Service.delete(previousS3FileName);
+
+        //  새로운 가게 이미지 등록
         String s3FileName = UUID.randomUUID() + file.getOriginalFilename();
-        URL url = s3Client.getUrl(bucket, s3FileName);
-        String s3UrlText = "" + url;
+        String s3UrlText = s3Client.getUrl(bucket, s3FileName).toString();
         store.update(requestDto.name(),
                 s3UrlText,
                 requestDto.address(),
