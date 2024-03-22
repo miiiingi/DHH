@@ -58,10 +58,8 @@ public class UserController {
     public HashMap<String, Object> mailSend(@RequestBody Map<String, String> body) {
         String mail = body.get("mail");
         HashMap<String, Object> map = new HashMap<>();
-        int number;
         try {
-            number = userService.sendMail(mail);
-            String num = String.valueOf(number);
+            String num = userService.sendMail(mail);
             map.put("success", Boolean.TRUE);
             map.put("number", num);
         } catch (Exception e) {

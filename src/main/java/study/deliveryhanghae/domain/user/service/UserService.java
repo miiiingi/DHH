@@ -12,6 +12,8 @@ import study.deliveryhanghae.domain.user.repository.UserRepository;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
+import java.security.SecureRandom;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -19,14 +21,14 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
     private static final String senderEmail = "kimmingi722@gmail.com";
-    private static int number;
 
-    public static void createNumber() {
-        number = (int) (Math.random() * (90000)) + 100000; //(int) Math.random() * (최댓값-최소값+1) + 최소값
+    public String generateRandomNumber() {
+        SecureRandom secureRandom = new SecureRandom();
+        int number = secureRandom.nextInt(90000) + 100000;
+        return String.valueOf(number);
     }
 
-    public MimeMessage CreateMail(String mail) {
-        createNumber();
+    public MimeMessage createMail(String mail, String number) {
         MimeMessage message = javaMailSender.createMimeMessage();
 
         try {
@@ -45,9 +47,14 @@ public class UserService {
         return message;
     }
 
-    public int sendMail(String mail) {
-        MimeMessage message = CreateMail(mail);
-        javaMailSender.send(message);
+    public String sendMail(String mail) {
+        String number = generateRandomNumber();
+        MimeMessage message = createMail(mail, number);
+        try {
+            javaMailSender.send(message);
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.EMAIL_SEND_FAILURE);
+        }
 
         return number;
     }
@@ -69,5 +76,4 @@ public class UserService {
                 .build();
         userRepository.save(user);
     }
-
 }

@@ -17,6 +17,7 @@ public enum ErrorCode {
     ACCESS_DENIED_ADMIN(400, "M002", "관리자 암호가 틀려 가입할 수 없습니다."),
     ALREADY_EXIST_NICKNAME(400, "M003", "이미 가입된 닉네임입니다."),
     NOT_MATCH_EMAIL_PASSWORD(400, "M004", "이메일 혹은 비밀번호가 틀렸습니다. 이메일 혹은 비밀번호를 확인하세요."),
+    EMAIL_SEND_FAILURE(400, "M005", "이메일이 발송되지 않았습니다. 이메일을 다시 확인하세요."),
 
     // Pay
     PAYMENT_REQUIRED(402, "P001","잔액 부족입니다."),
