@@ -23,7 +23,7 @@ import study.deliveryhanghae.global.config.security.jwt.JwtUtil;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    String[] APP_WHITE_LIST = {"/v2/login-page", "/v2/login", "/v2/signup", "/v1/login", "/v1/signup", "/signup", "/favicon.ico"};
+    String[] APP_WHITE_LIST = {"/v2/login-page", "/v2/login", "/v2/signup", "/v1/login", "/v1/signup", "/signup"};
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
