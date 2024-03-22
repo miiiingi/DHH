@@ -32,7 +32,7 @@ public class StoreService {
     private final OwnerRepository ownerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final String uploadDir = "D:/HH99/spring/DHH/src/main/resources/static/images/";
+    private final String uploadDir = "C:/project/DHH/src/main/resources/static/images/";
 
     // 업장 전체 목록 조회
     public List<StoreListDto> getStoreList() {
