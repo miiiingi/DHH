@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import study.deliveryhanghae.domain.order.dto.OrderResponseDto;
 import study.deliveryhanghae.domain.order.dto.OrderResponseDto.getOrderDto;
 import study.deliveryhanghae.domain.order.service.OrderService;
 import study.deliveryhanghae.domain.owner.dto.OwnerRequestDto;
@@ -16,6 +17,8 @@ import study.deliveryhanghae.domain.owner.service.OwnerService;
 import study.deliveryhanghae.global.config.security.owner.OwnerDetailsImpl;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -61,15 +64,17 @@ public class OwnerController {
      * @return
      */
     @GetMapping("/v2")
-    public String getOwnerMain(Model model, @AuthenticationPrincipal OwnerDetailsImpl userDetails){
+    public String getOwnerMain(@AuthenticationPrincipal OwnerDetailsImpl userDetails, Model model) {
         // 사장님 가게 가지고 있는 상태 확인하고 없으면 생성하도록 반환
-        if (userDetails.getOwner().isStoreStatus() == false) {
+        if (!userDetails.getOwner().isStoreStatus()) {
             return "storeRegister";
         }
+        List<getOrderDto> orderList = orderService.getOrderList();
+        GetMainDto mainResponseDto = new GetMainDto(orderList, ownerService.getOwnerPoint(userDetails.getOwner().getId()));
 
-        List<getOrderDto> orderList=orderService.getOrderList();
-        GetMainDto mainResponseDto = new GetMainDto(orderList,ownerService.getOwnerPoint(userDetails.getOwner().getId()));
-        model.addAttribute("mainResponseDto",mainResponseDto);
+        model.addAttribute("mainResponseDto", mainResponseDto);
+
         return "owner";
     }
+
 }
