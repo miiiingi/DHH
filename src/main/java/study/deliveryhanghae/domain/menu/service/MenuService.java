@@ -30,7 +30,7 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
 
-    private final String uploadDir = "D:/HH99/spring/DHH/src/main/resources/static/images/";
+    private final String uploadDir = "/Users/aper/Desktop/DHH/DHH/src/main/resources/static/images/";
 
     // 메뉴 추가
     @Transactional
