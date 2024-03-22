@@ -88,7 +88,7 @@ public class StoreController {
         } catch (IOException e) {
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-        return "owner";
+        return "redirect:/v2";
     }
 
     @Operation(summary = "가게 조회", description = "가게 상세페이지에 들어갈 가게 이름과 메뉴 리스트를 조회합니다.")
@@ -130,7 +130,6 @@ public class StoreController {
 
         // 서비스로부터 비밀번호 일치 여부 확인 후 반환
         boolean check = storeService.checkPassword(userDetails.getPassword(), enteredPassword);
-        log.info(String.valueOf(check));
         return ResponseEntity.ok(check);
     }
 

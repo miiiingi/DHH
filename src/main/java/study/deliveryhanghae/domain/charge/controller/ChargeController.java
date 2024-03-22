@@ -22,7 +22,7 @@ public class ChargeController {
     private final ChargeService chargeService;
 
     @Operation(summary = "결제 페이지", description = "유저의 결제 항목을 조회합니다.")
-    @GetMapping("/charge")
+    @GetMapping("/v2/charge")
     public String chargePage(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model){
         ChargeDto chargeDto = chargeService.preChargeProcess(userDetails.getUser().getId());
         model.addAttribute("chargeDto", chargeDto);
@@ -30,10 +30,9 @@ public class ChargeController {
     }
 
     @Operation(summary = "결제", description = "유저가 선택한 메뉴를 결제합니다.")
-    @ResponseBody
-    @PostMapping("/charge")
-    public String validationPayment(@RequestBody ChargeCallBackDto request) {
-        chargeService.chargeCallback(request);
-        return "/";
+    @PostMapping("/v2/charge")
+    public String validationPayment(@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody ChargeCallBackDto request) {
+        chargeService.chargeCallback(request,userDetails.getUser().getId());
+        return "redirect:/v1";
     }
 }
