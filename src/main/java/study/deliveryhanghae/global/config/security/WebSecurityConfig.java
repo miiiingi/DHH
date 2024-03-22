@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -19,26 +20,40 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import study.deliveryhanghae.global.config.security.jwt.JwtAuthenticationFilter;
 import study.deliveryhanghae.global.config.security.jwt.JwtAuthorizationFilter;
 import study.deliveryhanghae.global.config.security.jwt.JwtUtil;
+import study.deliveryhanghae.global.handler.CustomAccessDeniedHandler;
+import study.deliveryhanghae.global.handler.CustomAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
 
-    String[] APP_WHITE_LIST = {"/v2/login-page", "/v2/login", "/v2/signup", "/v1/login", "/v1/signup", "/signup", "/mailSend", "/favicon.ico"};
+    String[] APP_WHITE_LIST = {
+                                "/v2/login-page",
+                                "/v2/login",
+                                "/v2/signup",
+                                "/signup",
+                                "/mailSend",
+                                "/error",
+                                "/v1/**"
+                            };
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final CorsConfigurationSource corsConfigurationSource;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
 
     @Autowired
-    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration, CorsConfigurationSource corsConfigurationSource) {
+    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration, CorsConfigurationSource corsConfigurationSource, CustomAuthenticationEntryPoint customAuthenticationEntryPoint, CustomAccessDeniedHandler customAccessDeniedHandler) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
         this.authenticationConfiguration = authenticationConfiguration;
         this.corsConfigurationSource = corsConfigurationSource;
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+        this.customAccessDeniedHandler = customAccessDeniedHandler;
     }
 
 
@@ -88,19 +103,22 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource)) // cors 처리
+                .csrf(AbstractHttpConfigurer::disable) // csrf off
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // static resources permitAll
                         .requestMatchers(APP_WHITE_LIST).permitAll()
-                        .requestMatchers("/v1/**").permitAll()
                         .anyRequest().authenticated());
 
-        http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
-        http.addFilterBefore(ownerLoginFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(userLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class)
+                .addFilterBefore(ownerLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(userLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling((exceptionConfig) -> exceptionConfig
+                        .authenticationEntryPoint(customAuthenticationEntryPoint) // 401 처리
+                        .accessDeniedHandler(customAccessDeniedHandler)); // 403 처리
 
         return http.build();
     }
