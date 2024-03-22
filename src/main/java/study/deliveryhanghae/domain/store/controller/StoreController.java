@@ -1,5 +1,6 @@
 package study.deliveryhanghae.domain.store.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,6 @@ public class StoreController {
 
     private final StoreService storeService;
 
-
     //유저 메인페이지
     @Operation(summary = "메인페이지", description = "메인 페이지에 들어갈 가게 리스트를 조회합니다.")
     @GetMapping("/v1")
@@ -58,6 +58,7 @@ public class StoreController {
     public String getStore(@PathVariable Long storeId, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         GetStoreDto storeMenuList = storeService.getStore(storeId);
+
         model.addAttribute("store", storeMenuList);
 
         if (userDetails == null) {
@@ -102,13 +103,13 @@ public class StoreController {
 
     @Operation(summary = "가게 정보 수정", description = "가게의 정보들을 수정합니다.")
     @PutMapping("/v2/store")
+    @ResponseBody
     public String updateOwnerStore(@AuthenticationPrincipal OwnerDetailsImpl userDetails,
                                    @RequestPart("file") MultipartFile file,
                                    @RequestPart("request") UpdateStoreDto requestDto,
                                    Model model) throws IOException {
         storeService.updateOwnerStore(userDetails.getOwner(), requestDto, file);
         model.addAttribute("msg", "수정이 완료되었습니다.");
-
         return "ownerStore";
     }
 
