@@ -53,7 +53,7 @@ public class OrderService {
         User user = userRepository.getReferenceById(userId);
 
         int remainPoint = calculateRemain(user.getPoint(),menu.getPrice());
-        String remainPontStr = (remainPoint==-1) ? "잔고가 부족합니다." : String.valueOf(0);
+        String remainPontStr = (remainPoint==-1) ? "잔고가 부족합니다." : String.valueOf(remainPoint);
 
         return new OrderDto(menu.getId(), menu.getName(), menu.getImageUrl(), menu.getPrice(), user.getPoint(), remainPontStr, userId);
     }
@@ -72,7 +72,11 @@ public class OrderService {
                 new BusinessException(ENTITY_NOT_FOUND));
         Menu menu = menuRepository.findById(requestDto.menuId()).orElseThrow(()->
                 new BusinessException(ENTITY_NOT_FOUND));
-        user.updatePoint(calculateRemain(user.getPoint(), menu.getPrice()));
+        int remainPoint= calculateRemain(user.getPoint(), menu.getPrice());
+        if(remainPoint==-1){user.updatePoint(0);}
+        else {
+            user.updatePoint(remainPoint);
+        }
         createOrder(menu, user);
         return user.getPoint();
     }
