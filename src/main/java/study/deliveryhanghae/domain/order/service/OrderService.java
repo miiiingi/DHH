@@ -32,14 +32,11 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
-    private final StoreRepository storeRepository;
 
     public OrderService(OrderRepository orderRepository, MenuRepository menuRepository, UserRepository userRepository, StoreRepository storeRepository) {
         this.orderRepository = orderRepository;
         this.menuRepository = menuRepository;
         this.userRepository = userRepository;
-        this.storeRepository = storeRepository;
-
     }
 
     @Transactional(readOnly = true)
