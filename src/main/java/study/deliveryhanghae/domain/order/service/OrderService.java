@@ -72,12 +72,13 @@ public class OrderService {
                 new BusinessException(ENTITY_NOT_FOUND));
         Menu menu = menuRepository.findById(requestDto.menuId()).orElseThrow(()->
                 new BusinessException(ENTITY_NOT_FOUND));
-        int remainPoint= calculateRemain(user.getPoint(), menu.getPrice());
-        if(remainPoint==-1){user.updatePoint(0);}
-        else {
-            user.updatePoint(remainPoint);
+        int remainPont = calculateRemain(user.getPoint(), menu.getPrice());
+        if(remainPont==-1){
+            return -1;
+        }else {
+            user.updatePoint(calculateRemain(user.getPoint(), menu.getPrice()));
+            createOrder(menu, user);
         }
-        createOrder(menu, user);
         return user.getPoint();
     }
 
