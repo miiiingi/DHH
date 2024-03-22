@@ -11,7 +11,7 @@ public interface StoreRepository extends JpaRepository<Store,Long> {
 
     List<Store> findByMenuListNameContaining(String menuName);
 
-    void deleteAllInBatch(Owner owner);
-
     Store findByOwner(Owner owner);
+
+    void deleteAllInBatchByOwner(Owner owner);
 }
