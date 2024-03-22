@@ -31,12 +31,12 @@ public class ChargeService {
     }
 
     @Transactional
-    public void chargeCallback(ChargeCallBackDto request){
-        Long userId = 1L;
+    public void chargeCallback(ChargeCallBackDto request, Long userId){
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new BusinessException(ENTITY_NOT_FOUND));
         int point = Integer.parseInt(request.amount());
-        chargeRepository.save(new Charge(request.charge_uid(),point,user));
         user.updatePoint(point);
+        chargeRepository.save(new Charge(request.charge_uid(),point,user));
+
     }
 }
