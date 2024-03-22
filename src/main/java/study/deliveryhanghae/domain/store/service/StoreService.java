@@ -1,7 +1,9 @@
 package study.deliveryhanghae.domain.store.service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,14 @@ import study.deliveryhanghae.domain.store.dto.StoreResponseDto.GetStoreDto;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
 import study.deliveryhanghae.domain.store.entity.Store;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
+import study.deliveryhanghae.global.config.security.s3.S3Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +36,10 @@ public class StoreService {
     private final MenuRepository menuRepository;
     private final OwnerRepository ownerRepository;
     private final PasswordEncoder passwordEncoder;
-
-    private final String uploadDir = "D:/HH99/spring/DHH/src/main/resources/static/images/";
+    private final S3Service s3Service;
+    private final AmazonS3 s3Client;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     // 업장 전체 목록 조회
     public List<StoreListDto> getStoreList() {
@@ -64,14 +71,13 @@ public class StoreService {
     @Transactional
     public void createOwnerStore(CreateStoreDto requestDto, Owner owner, MultipartFile file) throws IOException {
 
-        String fullPath = uploadDir + file.getOriginalFilename();
-        file.transferTo(new File(fullPath));
-
+        String s3FileName = UUID.randomUUID() + file.getOriginalFilename();
+        URL url = s3Client.getUrl(bucket, s3FileName);
+        String s3UrlText = "" + url;
+        s3Service.upload(file, s3FileName);
         Owner ownerDB = ownerRepository.getReferenceById(owner.getId());
-
         ownerDB.hasStore();
-
-        storeRepository.save(requestDto.toEntity(ownerDB, fullPath, file.getOriginalFilename()));
+        storeRepository.save(requestDto.toEntity(ownerDB, s3UrlText, file.getOriginalFilename()));
     }
 
     // 사장님 가게,메뉴 리스트 얻기
@@ -84,8 +90,8 @@ public class StoreService {
     }
 
     /***
-     * 
-     * 
+     *
+     *
      * @param owner
      * @param requestDto
      * @param file
@@ -96,12 +102,11 @@ public class StoreService {
     public void updateOwnerStore(Owner owner, UpdateStoreDto requestDto, MultipartFile file) throws IOException {
 
         Store store = storeRepository.findByOwner(owner);
-
-        String fullPath = uploadDir + file.getOriginalFilename();
-        file.transferTo(new File(fullPath));
-
+        String s3FileName = UUID.randomUUID() + file.getOriginalFilename();
+        URL url = s3Client.getUrl(bucket, s3FileName);
+        String s3UrlText = "" + url;
         store.update(requestDto.name(),
-                fullPath,
+                s3UrlText,
                 requestDto.address(),
                 requestDto.description(),
                 file.getOriginalFilename());
@@ -110,8 +115,6 @@ public class StoreService {
 
 
     /**
-     *
-     *
      * @param owner
      */
 
@@ -138,9 +141,9 @@ public class StoreService {
     private List<StoreListDto> mapStoresToDto(List<Store> stores) {
         return stores.stream()
                 .map(store -> new StoreListDto(
-                                store.getId(),
-                                store.getName(),
-                                store.getImageUrl()))
+                        store.getId(),
+                        store.getName(),
+                        store.getImageUrl()))
                 .toList();
     }
 
