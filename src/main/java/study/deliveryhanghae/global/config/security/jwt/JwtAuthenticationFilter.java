@@ -28,7 +28,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        log.info("로그인 시도");
         try {
             LoginRequestRecord requestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestRecord.class);
             return getAuthenticationManager().authenticate(
@@ -46,8 +45,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        log.info("로그인 성공 및 JWT 생성");
-
         String email = "";
 
         if (authResult.getPrincipal() instanceof OwnerDetailsImpl) {
@@ -63,8 +60,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        log.info("로그인 실패");
-
         // 실패한 이유에 따라 적절한 에러 코드를 설정합니다.
         String errorCode = ErrorCode.NOT_MATCH_EMAIL_PASSWORD.getCode();
         String errorMessage = ErrorCode.NOT_MATCH_EMAIL_PASSWORD.getMessage();

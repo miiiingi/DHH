@@ -130,7 +130,6 @@ public class StoreController {
 
         // 서비스로부터 비밀번호 일치 여부 확인 후 반환
         boolean check = storeService.checkPassword(userDetails.getPassword(), enteredPassword);
-        log.info(String.valueOf(check));
         return ResponseEntity.ok(check);
     }
 
