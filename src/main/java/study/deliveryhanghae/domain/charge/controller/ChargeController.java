@@ -30,10 +30,9 @@ public class ChargeController {
     }
 
     @Operation(summary = "결제", description = "유저가 선택한 메뉴를 결제합니다.")
-    @ResponseBody
     @PostMapping("/v2/charge")
     public String validationPayment(@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody ChargeCallBackDto request) {
         chargeService.chargeCallback(request,userDetails.getUser().getId());
-        return "/v1";
+        return "redirect:/v1";
     }
 }

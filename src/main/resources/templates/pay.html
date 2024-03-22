@@ -20,9 +20,9 @@
     // remainingPoints가 -1일 경우
     if (remainingPoints === -1) {
         // alert 표시
-        alert("잔액이 부족합니다");
+        alert("잔액이 부족합니다. 포인트 충전 페이지로 이동합니다.");
         // 뒤로 이동
-        window.history.back();
+        window.location.href = "/v2/charge";
     }
     // 메인화면으로 이동하는 함수
     function goToMain() {

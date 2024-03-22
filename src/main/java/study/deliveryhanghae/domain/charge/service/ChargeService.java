@@ -34,8 +34,9 @@ public class ChargeService {
     public void chargeCallback(ChargeCallBackDto request, Long userId){
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new BusinessException(ENTITY_NOT_FOUND));
+        if(user.getPoint()==-1){user.updatePoint(0);}
         int point = Integer.parseInt(request.amount());
-        user.updatePoint(point);
+        user.chargePoint(point);
         chargeRepository.save(new Charge(request.charge_uid(),point,user));
 
     }

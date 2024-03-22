@@ -53,7 +53,7 @@ public class OrderService {
         User user = userRepository.getReferenceById(userId);
 
         int remainPoint = calculateRemain(user.getPoint(),menu.getPrice());
-        String remainPontStr = (remainPoint==-1) ? "잔고가 부족합니다." : String.valueOf(remainPoint);
+        String remainPontStr = (remainPoint==-1) ? "잔고가 부족합니다." : String.valueOf(0);
 
         return new OrderDto(menu.getId(), menu.getName(), menu.getImageUrl(), menu.getPrice(), user.getPoint(), remainPontStr, userId);
     }
