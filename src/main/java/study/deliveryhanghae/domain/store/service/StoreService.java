@@ -22,7 +22,6 @@ import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
 import study.deliveryhanghae.domain.store.entity.Store;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
 import study.deliveryhanghae.global.config.s3.S3Service;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
