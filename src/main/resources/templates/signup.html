@@ -30,7 +30,7 @@
         <div class="login-id-label">Address</div>
         <input type="text" name="address" placeholder="Address" class="login-input-box">
 
-        <div class="login-id-label">Username</div>
+        <div class="login-id-label">Nickname</div>
         <input type="text" name="nickname" placeholder="Nickname" class="login-input-box">
 
         <!-- 에러 및 인증 메시지 표시를 위한 요소 -->
@@ -110,7 +110,8 @@
         if (email === "") {
             showMessage("이메일을 입력해주세요.", "red");
             return false;
-        } else if (!checkVerification()) {
+        }
+        if (!checkVerification()) {
             showMessage("이메일 인증을 먼저 완료해주세요.", "red");
             return false;
         }
