@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import study.deliveryhanghae.domain.menu.entity.Menu;
-import study.deliveryhanghae.domain.menu.repository.MenuRepository;
 import study.deliveryhanghae.domain.owner.entity.Owner;
 import study.deliveryhanghae.domain.owner.repository.OwnerRepository;
 import study.deliveryhanghae.domain.store.dto.StoreRequestDto.CreateStoreDto;
@@ -23,9 +22,7 @@ import study.deliveryhanghae.domain.store.entity.Store;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
 import study.deliveryhanghae.global.config.security.s3.S3Service;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,7 +32,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StoreService {
     private final StoreRepository storeRepository;
-    private final MenuRepository menuRepository;
     private final OwnerRepository ownerRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
@@ -174,7 +170,7 @@ public class StoreService {
                     )
             );
         }
-        return new GetStoreDto(menuLists, store.getName());
+        return new GetStoreDto(menuLists, store.getName(), store.getImageUrl(), store.getDescription());
     }
 
 

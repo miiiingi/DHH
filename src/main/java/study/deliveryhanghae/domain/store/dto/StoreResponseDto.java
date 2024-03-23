@@ -9,7 +9,9 @@ public class StoreResponseDto{
 
     public record GetStoreDto(
             List<GetMenuListDto> menuLists,
-            String storeName
+            String storeName,
+            String storeUrl,
+            String storeDesc
     ) {
     }
 
