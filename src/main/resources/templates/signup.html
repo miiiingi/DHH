@@ -18,7 +18,7 @@
     <input type="text" id="verification-code" placeholder="Verification Code" class="login-input-box">
     <button id="verify-btn" onclick="checkVerification()">인증번호 확인</button>
 
-    <form id="signup-form" action="/signup" method="post">
+    <form id="signup-form" action="/signup" method="post" onsubmit="return submitForm()">
         <div class="login-id-label">Password</div>
         <input type="password" id="password" name="password" placeholder="password" class="login-input-box">
 
@@ -105,9 +105,16 @@
 
     // 회원 가입 폼 전송
     function submitForm() {
-        var email = document.getElementById("verification-email").value;
+        let email = document.getElementById("verification-email").value;
+        if (email === "") {
+            showMessage("이메일을 입력해주세요.", "red");
+            return false;
+        } else if (!checkVerification()) {
+            showMessage("이메일 인증을 먼저 완료해주세요.", "red");
+            return false;
+        }
         document.getElementById("email").value = email;
-        document.getElementById("signup-form").submit();
+        return true;
     }
 </script>
 
