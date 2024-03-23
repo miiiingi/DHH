@@ -73,6 +73,7 @@
 
         // 인증이 성공한 경우에만 초록색으로 메시지를 표시하도록 변경
         showMessage("인증이 완료되었습니다.", "green");
+        document.getElementById("verification-email").readOnly = true;
         return true;
     }
 
