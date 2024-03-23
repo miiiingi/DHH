@@ -1,7 +1,9 @@
 package study.deliveryhanghae.domain.menu.service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,10 +15,10 @@ import study.deliveryhanghae.domain.owner.entity.Owner;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.GetMenuListDto;
 import study.deliveryhanghae.domain.store.entity.Store;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
+import study.deliveryhanghae.global.config.s3.S3Service;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
