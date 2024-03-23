@@ -1,53 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입 페이지</title>
-    <script>
-        function onclickAdmin() {
-            // Get the checkbox
-            var checkBox = document.getElementById("admin-check");
-            // Get the output text
-            var box = document.getElementById("admin-token");
-
-            // If the checkbox is checked, display the output text
-            if (checkBox.checked == true) {
-                box.style.display = "block";
-            } else {
-                box.style.display = "none";
-            }
-        }
-
-        function validatePassword() {
-            var password = document.getElementById("password").value;
-            var confirmPassword = document.getElementById("confirm-password").value;
-
-            if (password != confirmPassword) {
-                document.getElementById("password-match").innerHTML = "비밀번호와 비밀번호 확인란의 문자가 다릅니다.";
-            } else {
-                document.getElementById("password-match").innerHTML = "";
-            }
-        }
-    </script>
+    <!-- jQuery 라이브러리를 로드합니다. -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <div id="login-form">
     <div id="login-title">Sign up Delivery Hanghae</div>
+    <div class="login-id-label">E-mail</div>
+    <input type="text" id="verification-email" name="verification-email" placeholder="E-mail" class="login-input-box">
+    <button id="verify-code-btn" onclick="sendMailVerification()">메일 인증</button>
 
-    <form action="/v2/signup" method="post">
+    <div class="login-id-label">Verification Code</div>
+    <input type="text" id="verification-code" placeholder="Verification Code" class="login-input-box">
+    <button id="verify-btn" onclick="checkVerification()">인증번호 확인</button>
 
-        <!-- 중복된 이메일 또는 닉네임 메시지 표시 -->
-        <div th:if="${ErrorMessage != null}" style="color: red;" th:text="${ErrorMessage}"></div>
-
-
-        <div class="login-id-label">E-mail</div>
-        <input type="text" name="email" placeholder="E-mail" class="login-input-box">
-
+    <form id="signup-form" action="/v2/signup" method="post" onsubmit="return submitForm()">
         <div class="login-id-label">Password</div>
         <input type="password" id="password" name="password" placeholder="password" class="login-input-box">
 
@@ -55,14 +26,97 @@
         <input type="password" id="confirm-password" onkeyup="validatePassword()" placeholder="Confirm password"
                class="login-input-box">
         <div id="password-match" style="color: red;"></div>
+
         <div class="login-id-label">Name</div>
         <input type="text" name="name" placeholder="Name" class="login-input-box">
 
-
-        <div>
+        <!-- 에러 및 인증 메시지 표시를 위한 요소 -->
+        <div id="message-box" style="color: red;">
+            <p th:text="${ErrorMessage}" style="color: red;"></p>
         </div>
-        <button id="login-id-submit">회원 가입</button>
+
+        <!-- 회원 가입 버튼 -->
+        <button id="signup-btn" onclick="submitForm()">회원 가입</button>
+
+        <!-- 이메일 값을 전달하기 위한 숨겨진 input 필드 -->
+        <input type="hidden" id="email" name="email">
+
     </form>
 </div>
+
+<script>
+    let verificationResult;
+
+    function validatePassword() {
+        var password = document.getElementById("password").value;
+        var confirmPassword = document.getElementById("confirm-password").value;
+
+        if (password != confirmPassword) {
+            document.getElementById("password-match").innerHTML = "비밀번호와 비밀번호 확인란의 문자가 다릅니다.";
+        } else {
+            document.getElementById("password-match").innerHTML = "";
+        }
+    }
+
+    // 인증번호 검증 기능
+    function checkVerification() {
+        let verificationCode = document.getElementById("verification-code").value;
+
+        // verificationResult가 정의되지 않았거나, 인증 번호가 일치하지 않는 경우 에러 메시지 표시
+        if (!verificationResult || verificationCode !== verificationResult.number) {
+            showMessage("인증번호가 올바르지 않습니다.", "red");
+            return false;
+        }
+
+        // 인증이 성공한 경우에만 초록색으로 메시지를 표시하도록 변경
+        showMessage("인증이 완료되었습니다.", "green");
+        document.getElementById("verification-email").readOnly = true;
+        return true;
+    }
+
+    // 에러 및 인증 메시지 표시
+    function showMessage(message, color) {
+        const messageDiv = document.getElementById("message-box");
+        messageDiv.innerHTML = message;
+        messageDiv.style.color = color;
+    }
+
+    // 이메일 인증 요청
+    function sendMailVerification() {
+        var formData = {
+            mail: $("input[name='verification-email']").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/mailSend", // 회원가입 처리를 하는 엔드포인트 주소
+            data: JSON.stringify(formData),
+            dataType: 'json',
+            success: function (result) {
+                verificationResult = result;
+                alert("이메일로 인증 번호가 발송되었습니다. 이메일을 확인하세요.");
+            },
+            error: function (xhr, status, error) {
+            }
+        });
+    }
+
+    // 회원 가입 폼 전송
+    function submitForm() {
+        let email = document.getElementById("verification-email").value;
+        if (email === "") {
+            showMessage("이메일을 입력해주세요.", "red");
+            return false;
+        }
+        if (!checkVerification()) {
+            showMessage("이메일 인증을 먼저 완료해주세요.", "red");
+            return false;
+        }
+        document.getElementById("email").value = email;
+        return true;
+    }
+</script>
+
 </body>
 </html>
