@@ -83,7 +83,13 @@ public class StoreService {
     public GetStoreDto getOwnerStore(Owner owner) {
 
         Store store = storeRepository.findAllJoinFetch(owner);
-
+        if (store == null) {
+            store = storeRepository.findByOwner(owner);
+            return new GetStoreDto(null,
+                    store.getName(),
+                    store.getImageUrl(),
+                    store.getDescription());
+        }
         return getGetMenuList(store);
     }
 
@@ -155,6 +161,7 @@ public class StoreService {
 
     @NotNull
     private GetStoreDto getGetMenuList(Store store) {
+
         List<Menu> menus = store.getMenuList();
 
         List<GetMenuListDto> menuLists = new ArrayList<>();
