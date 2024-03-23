@@ -99,7 +99,6 @@ public class JwtTokenProvider {
      * http 헤더로부터 bearer 토큰을 가져옴.
      */
     public String resolveToken(String token) {
-        log.info("bearerToken : " + token);
         if (token != null && token.startsWith(BEARER_PREFIX)) {
             return token.substring(7);
         }

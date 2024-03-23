@@ -36,7 +36,6 @@ public class JwtFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(tokenValue)) {
             // JWT 토큰 substring
             tokenValue = jwtTokenProvider.resolveToken(tokenValue);
-            log.info("tokenValue : " + tokenValue);
 
             if (!jwtTokenProvider.validateToken(tokenValue)) {
                 log.error("Token Error");
@@ -61,7 +60,6 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = createUserAuthentication(username);
         context.setAuthentication(authentication);
-
         SecurityContextHolder.setContext(context);
     }
 
