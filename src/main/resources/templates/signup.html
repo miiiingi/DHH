@@ -38,11 +38,12 @@
             <p th:text="${ErrorMessage}" style="color: red;"></p>
         </div>
 
+        <!-- 회원 가입 버튼 -->
+        <button id="signup-btn" onclick="submitForm()">회원 가입</button>
+
         <!-- 이메일 값을 전달하기 위한 숨겨진 input 필드 -->
         <input type="hidden" id="email" name="email">
 
-        <!-- 회원 가입 버튼 -->
-        <button id="signup-btn" onclick="submitForm()">회원 가입</button>
     </form>
 </div>
 
