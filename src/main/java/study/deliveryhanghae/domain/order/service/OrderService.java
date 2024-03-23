@@ -1,6 +1,7 @@
 package study.deliveryhanghae.domain.order.service;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import study.deliveryhanghae.domain.menu.entity.Menu;
@@ -14,6 +15,7 @@ import study.deliveryhanghae.domain.order.repository.OrderRepository;
 import study.deliveryhanghae.domain.owner.dto.OwnerResponseDto;
 import study.deliveryhanghae.domain.owner.dto.OwnerResponseDto.GetMainDto;
 import study.deliveryhanghae.domain.owner.entity.Owner;
+import study.deliveryhanghae.domain.owner.repository.OwnerRepository;
 import study.deliveryhanghae.domain.store.entity.Store;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
 import study.deliveryhanghae.domain.user.entity.User;
@@ -30,17 +32,13 @@ import static study.deliveryhanghae.global.handler.exception.ErrorCode.ENTITY_NO
 ;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final UserRepository userRepository;
-
-    public OrderService(OrderRepository orderRepository, MenuRepository menuRepository, UserRepository userRepository, StoreRepository storeRepository) {
-        this.orderRepository = orderRepository;
-        this.menuRepository = menuRepository;
-        this.userRepository = userRepository;
-    }
+    private final OwnerRepository ownerRepository;
 
     @Transactional(readOnly = true)
     public OrderDto order(Long menuId, Long userId) {
@@ -107,6 +105,7 @@ public class OrderService {
         owner.updatePoint(menu.getPrice());
     }
 
+
     @Transactional(readOnly = true)
     public GetMainDto getOrderList(Owner owner) {
 
@@ -123,7 +122,13 @@ public class OrderService {
             );
         }
         // 사장님 포인트 가졍오기
-        int ownersPoint = orders.get(0).getOwner().getPoint();
+        int ownersPoint =0;
+
+        if(orders.isEmpty()){
+            ownersPoint = ownerRepository.findPointById(owner.getId());
+            return new GetMainDto(orderList, ownersPoint);
+        }
+        ownersPoint =  orders.get(0).getOwner().getPoint();
         return new GetMainDto(orderList, ownersPoint);
     }
 

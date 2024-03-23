@@ -30,4 +30,13 @@ public class OwnerService {
         ownerRepository.save(owner);
     }
 
+
+    /***
+     * 사장님 메인 페이지에 보내 줄 포인트 얻기
+     * @param ownerID
+     * @return
+     */
+    public int getOwnerPoint(Long ownerID){
+        return ownerRepository.findPointById(ownerID);
+    }
 }
