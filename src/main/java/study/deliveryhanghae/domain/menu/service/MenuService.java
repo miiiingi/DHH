@@ -19,11 +19,10 @@ import study.deliveryhanghae.global.config.security.s3.S3Service;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
 
+import static study.deliveryhanghae.global.handler.exception.ErrorCode.NOT_FOUND_STORE;
 import static study.deliveryhanghae.global.handler.exception.ErrorCode.NOT_FOUND_STORE_MENU;
 
 
@@ -43,7 +42,7 @@ public class MenuService {
     @Transactional
     public void createMenu(CreateMenuDto requestDto, Owner owner) throws IOException {
         // owner 정보에서 가게 정보 뽑기
-        Store store = getStoreByOwner(owner);
+        Store store = storeRepository.findByOwner(owner);
         MultipartFile file = requestDto.menuImg();
         String originFileName = file.getOriginalFilename(); // img 원본 이름
         String s3FileName = UUID.randomUUID() + originFileName;
@@ -55,20 +54,22 @@ public class MenuService {
         menuRepository.save(menu);
     }
 
+    @Transactional(readOnly = true)
     public GetMenuListDto getMenu(Long id, Owner owner) {
-        // 유저의 가게 가져오기
-        Store store = getStoreByOwner(owner);
+        // 한번에 메뉴까지 가져오자
+        Store store = storeRepository.findAllJoinFetch(owner);
 
-        // user store id 와 menu store id 비교
-        Long storeId = store.getId();
-
-        // 메뉴 존재하는지 확인
-        Menu menu = hasMenu(id);
-
-        // 유저 가게 정보와 메뉴 가게 정보가 일치여부 확인
-        if (!(Objects.equals(storeId, menu.getStore().getId()))) {
-            throw new BusinessException(NOT_FOUND_STORE_MENU);
+        // 가져온 매장 존재하는지 확인,
+        if (store == null) {
+            throw new BusinessException(NOT_FOUND_STORE);
         }
+
+        // 메뉴 id와 연결된 메뉴 검색, 메뉴 없으면 해당 가게에 없는 메뉴다
+        Menu menu = store.getMenuList()
+                .stream()
+                .filter(m -> m.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_STORE_MENU));
 
         return new GetMenuListDto(
                 menu.getId(),
@@ -101,17 +102,13 @@ public class MenuService {
         );
 
     }
-    
+
     // 메뉴 삭제
     public void deleteMenu(Long id) {
         Menu menu = hasMenu(id);
         menuRepository.delete(menu);
     }
 
-    // 유저 가게 정보 확인
-    private Store getStoreByOwner(Owner owner) {
-        return storeRepository.findByOwner(owner);
-    }
 
     // 존재하는 메뉴인지 확인
     private Menu hasMenu(Long menuId) {
