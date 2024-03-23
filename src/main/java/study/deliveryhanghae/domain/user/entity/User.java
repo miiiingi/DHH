@@ -35,7 +35,10 @@ public class User {
         this.point = 10000;
     }
 
-    public void updatePoint(int point) {
+    public void chargePoint(int point) {
         this.point += point;
+    }
+    public void updatePoint(int point) {
+        this.point = point;
     }
 }
