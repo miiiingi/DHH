@@ -32,7 +32,8 @@ public class WebSecurityConfig {
                                 "/signup",
                                 "/mailSend",
                                 "/error",
-                                "/v1/**"
+                                "/v1/**",
+                                "/logout"
                             };
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -40,22 +41,24 @@ public class WebSecurityConfig {
     private final CorsConfigurationSource corsConfigurationSource;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
-    private final RefreshTokenService refreshTokenService;
+    private final TokenService tokenService;
+    private final UserDetailsServiceImpl userDetailsService;
 
 
     @Autowired
-    public WebSecurityConfig(JwtTokenProvider jwtTokenProvider, AuthenticationConfiguration authenticationConfiguration, CorsConfigurationSource corsConfigurationSource, CustomAuthenticationEntryPoint customAuthenticationEntryPoint, CustomAccessDeniedHandler customAccessDeniedHandler, RefreshTokenService refreshTokenService) {
+    public WebSecurityConfig(JwtTokenProvider jwtTokenProvider, AuthenticationConfiguration authenticationConfiguration, CorsConfigurationSource corsConfigurationSource, CustomAuthenticationEntryPoint customAuthenticationEntryPoint, CustomAccessDeniedHandler customAccessDeniedHandler, TokenService tokenService, UserDetailsServiceImpl userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationConfiguration = authenticationConfiguration;
         this.corsConfigurationSource = corsConfigurationSource;
         this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
         this.customAccessDeniedHandler = customAccessDeniedHandler;
-        this.refreshTokenService = refreshTokenService;
+        this.tokenService = tokenService;
+        this.userDetailsService = userDetailsService;
     }
 
 
     public JwtAuthenticationFilter ownerLoginFilter() throws Exception {
-        JwtAuthenticationFilter ownerFilter = new JwtAuthenticationFilter(jwtTokenProvider, refreshTokenService);
+        JwtAuthenticationFilter ownerFilter = new JwtAuthenticationFilter(jwtTokenProvider, tokenService);
         // owner Login 링크 연결
         ownerFilter.setFilterProcessesUrl("/v2/login");
         ownerFilter.setAuthenticationManager(authenticationManager());
@@ -63,7 +66,7 @@ public class WebSecurityConfig {
     }
 
     public JwtAuthenticationFilter userLoginFilter() throws Exception {
-        JwtAuthenticationFilter userFilter = new JwtAuthenticationFilter(jwtTokenProvider, refreshTokenService);
+        JwtAuthenticationFilter userFilter = new JwtAuthenticationFilter(jwtTokenProvider, tokenService);
         // user Login 링크 연결
         userFilter.setFilterProcessesUrl("/login");
         userFilter.setAuthenticationManager(authenticationManager());
@@ -105,7 +108,7 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated());
 
         http
-                .addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtTokenProvider, userDetailsService), JwtAuthenticationFilter.class)
                 .addFilterBefore(ownerLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(userLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling((exceptionConfig) -> exceptionConfig

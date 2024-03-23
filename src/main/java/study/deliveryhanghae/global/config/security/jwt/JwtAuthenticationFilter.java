@@ -20,11 +20,11 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenService refreshTokenService;
+    private final TokenService tokenService;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, RefreshTokenService refreshTokenService) {
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, TokenService tokenService) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.refreshTokenService = refreshTokenService;
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -47,17 +47,19 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
 
-        String accessToken = "";
+        String email = "";
 
         if (authResult.getPrincipal() instanceof OwnerDetailsImpl) {
-            String refreshToken = jwtTokenProvider.createRefreshToken(((OwnerDetailsImpl) authResult.getPrincipal()).getUser().getEmail());
-            accessToken = jwtTokenProvider.createAccessToken(((OwnerDetailsImpl) authResult.getPrincipal()).getUser().getEmail());
-            refreshTokenService.saveTokenInfo(((OwnerDetailsImpl) authResult.getPrincipal()).getUser().getEmail(), "owner",refreshToken, accessToken);
+            email = ((OwnerDetailsImpl) authResult.getPrincipal()).getUser().getEmail();
         } else if (authResult.getPrincipal() instanceof UserDetailsImpl) {
-            String refreshToken = jwtTokenProvider.createRefreshToken(((UserDetailsImpl) authResult.getPrincipal()).getUser().getEmail());
-            accessToken = jwtTokenProvider.createAccessToken(((UserDetailsImpl) authResult.getPrincipal()).getUser().getEmail());
-            refreshTokenService.saveTokenInfo(((UserDetailsImpl) authResult.getPrincipal()).getUser().getEmail(), "user",refreshToken, accessToken);
+            email = ((OwnerDetailsImpl) authResult.getPrincipal()).getUser().getEmail();
         }
+
+        String accessToken = jwtTokenProvider.createAccessToken(email);
+        String refreshToken = jwtTokenProvider.createRefreshToken();
+        tokenService.setRefreshToken(refreshToken, email);
+
+        log.info("accessToken : " + accessToken + " / refreshToken : " + refreshToken);
 
         response.addHeader(JwtTokenProvider.AUTHORIZATION_HEADER, accessToken);
     }
