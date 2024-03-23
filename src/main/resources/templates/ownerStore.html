@@ -105,7 +105,7 @@
                         <li>
                             <div>
                                 <strong class="d-block" th:text="${store.storeName()}">가게 이름</strong>
-<!--                                <img src=@{${storeUrl}} class="rounded mx-auto d-block" alt="가게 썸네일" width="200px" height="200px" >-->
+                                <img src=@{${}} class="rounded mx-auto d-block" alt="가게 썸네일" width="200px" height="200px" >
                             </div>
                         </li>
                         <li>
@@ -202,7 +202,7 @@
                     <div class="card mb-3" style="max-width: 540px;" th:each="menu : ${store.menuLists()}">
                         <div class="row g-0">
                             <div class="col-md-4">
-                                <!--                                <img th:src="@{${menu.menuUrl()}}" th:id="img_ + ${menu.menuId()}" class="img-fluid rounded-start" width="225" height="100%">-->
+                                <img th:src="@{${menu.menuUrl()}}" th:id="img_ + ${menu.menuId()}" class="img-fluid rounded-start" width="225" height="100%" alt="">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">

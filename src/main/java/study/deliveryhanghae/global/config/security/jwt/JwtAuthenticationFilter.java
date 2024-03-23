@@ -20,10 +20,12 @@ import java.io.IOException;
 
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private final JwtUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, RefreshTokenService refreshTokenService) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
@@ -45,17 +47,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        String email = "";
+
+        String accessToken = jwtTokenProvider.createAccessToken(authResult);
+        String refreshToken = jwtTokenProvider.createRefreshToken();
 
         if (authResult.getPrincipal() instanceof OwnerDetailsImpl) {
-            email = ((OwnerDetailsImpl) authResult.getPrincipal()).getUsername();
+            refreshTokenService.saveTokenInfo(((OwnerDetailsImpl) authResult.getPrincipal()).getUser().getEmail(), "owner",refreshToken, accessToken);
         } else if (authResult.getPrincipal() instanceof UserDetailsImpl) {
-            email = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
+            refreshTokenService.saveTokenInfo(((UserDetailsImpl) authResult.getPrincipal()).getUser().getEmail(), "user",refreshToken, accessToken);
         }
 
-        String token = jwtUtil.createToken(email);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
-
+        response.addHeader(JwtTokenProvider.AUTHORIZATION_HEADER, accessToken);
     }
 
     @Override

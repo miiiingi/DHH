@@ -1,4 +1,4 @@
-package study.deliveryhanghae.global.config;
+package study.deliveryhanghae.global.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

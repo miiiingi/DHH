@@ -18,12 +18,12 @@ public class User {
     @Column(unique = true)
     private String email;
     private String password;
+
     @Column(unique = true)
     private String nickname;
 
-    @Enumerated(EnumType.STRING)
-    private UserRoleEnum authority;
     private String address;
+
     private int point;
 
     @Builder
@@ -32,7 +32,6 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.address = address;
-        this.authority = UserRoleEnum.USER;
         this.point = 10000;
     }
 

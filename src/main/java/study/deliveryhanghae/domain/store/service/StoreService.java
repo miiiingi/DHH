@@ -162,7 +162,7 @@ public class StoreService {
                     )
             );
         }
-        return new GetStoreDto(menuLists, store.getName());
+        return new GetStoreDto(menuLists, store.getName(), store.getImageUrl());
     }
 
 

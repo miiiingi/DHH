@@ -12,14 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
-import study.deliveryhanghae.global.config.security.jwt.JwtAuthenticationFilter;
-import study.deliveryhanghae.global.config.security.jwt.JwtAuthorizationFilter;
-import study.deliveryhanghae.global.config.security.jwt.JwtUtil;
+import study.deliveryhanghae.global.config.security.jwt.*;
 import study.deliveryhanghae.global.handler.CustomAccessDeniedHandler;
 import study.deliveryhanghae.global.handler.CustomAuthenticationEntryPoint;
 
@@ -38,27 +35,27 @@ public class WebSecurityConfig {
                                 "/v1/**"
                             };
 
-    private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final CorsConfigurationSource corsConfigurationSource;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final RefreshTokenService refreshTokenService;
 
 
     @Autowired
-    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration, CorsConfigurationSource corsConfigurationSource, CustomAuthenticationEntryPoint customAuthenticationEntryPoint, CustomAccessDeniedHandler customAccessDeniedHandler) {
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
+    public WebSecurityConfig(JwtTokenProvider jwtTokenProvider, AuthenticationConfiguration authenticationConfiguration, CorsConfigurationSource corsConfigurationSource, CustomAuthenticationEntryPoint customAuthenticationEntryPoint, CustomAccessDeniedHandler customAccessDeniedHandler, RefreshTokenService refreshTokenService) {
+        this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationConfiguration = authenticationConfiguration;
         this.corsConfigurationSource = corsConfigurationSource;
         this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
         this.customAccessDeniedHandler = customAccessDeniedHandler;
+        this.refreshTokenService = refreshTokenService;
     }
 
 
     public JwtAuthenticationFilter ownerLoginFilter() throws Exception {
-        JwtAuthenticationFilter ownerFilter = new JwtAuthenticationFilter(jwtUtil);
+        JwtAuthenticationFilter ownerFilter = new JwtAuthenticationFilter(jwtTokenProvider, refreshTokenService);
         // owner Login 링크 연결
         ownerFilter.setFilterProcessesUrl("/v2/login");
         ownerFilter.setAuthenticationManager(authenticationManager());
@@ -66,7 +63,7 @@ public class WebSecurityConfig {
     }
 
     public JwtAuthenticationFilter userLoginFilter() throws Exception {
-        JwtAuthenticationFilter userFilter = new JwtAuthenticationFilter(jwtUtil);
+        JwtAuthenticationFilter userFilter = new JwtAuthenticationFilter(jwtTokenProvider, refreshTokenService);
         // user Login 링크 연결
         userFilter.setFilterProcessesUrl("/login");
         userFilter.setAuthenticationManager(authenticationManager());
@@ -76,11 +73,6 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
     }
 
     @Bean
@@ -113,7 +105,7 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated());
 
         http
-                .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(ownerLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(userLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling((exceptionConfig) -> exceptionConfig

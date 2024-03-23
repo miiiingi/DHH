@@ -31,11 +31,11 @@ public enum ErrorCode {
     // STORE
     NOT_FOUND_STORE(400, "S001", "가게 정보가 없습니다."),
     NOT_FOUND_STORE_MENU(400, "S002", "해당하는 메뉴가 없습니다."),
-
-    ;
+    REDIS_ERROR(500, "R001", "Redis Error"),
+    INVALID_JWT(502, "R002", "Jwt Invalid Error");
     private final String code;
     private final String message;
-    private int status;
+    private final int status;
 
     ErrorCode(final int status, final String code, final String message) {
         this.status = status;
