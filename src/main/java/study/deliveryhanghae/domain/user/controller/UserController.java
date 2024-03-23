@@ -44,7 +44,7 @@ public class UserController {
         } catch (BusinessException ex) {
             model.addAttribute("ErrorCode", ex.getErrorCode().getStatus());
             model.addAttribute("ErrorMessage", ex.getErrorCode().getMessage());
-            return "redirect:/v1/signup";
+            return "signup";
         }
         return "redirect:/v1/login";
     }
