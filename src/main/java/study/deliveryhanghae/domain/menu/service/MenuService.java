@@ -19,6 +19,7 @@ import study.deliveryhanghae.global.config.s3.S3Service;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
@@ -43,6 +44,7 @@ public class MenuService {
     public void createMenu(CreateMenuDto requestDto, Owner owner) throws IOException {
         // owner 정보에서 가게 정보 뽑기
         Store store = getStoreByOwner(owner);
+
         MultipartFile file = requestDto.menuImg();
         String originFileName = file.getOriginalFilename(); // img 원본 이름
         String s3FileName = UUID.randomUUID() + originFileName;
