@@ -21,6 +21,8 @@ import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
 import study.deliveryhanghae.domain.store.entity.Store;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
 import study.deliveryhanghae.global.config.security.s3.S3Service;
+import study.deliveryhanghae.global.handler.exception.BusinessException;
+import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,6 +58,16 @@ public class StoreService {
 
         Store store = storeRepository.findAllJoinFetch(storeId);
 
+        if(store == null){
+            store = storeRepository.findById(storeId).orElseThrow(
+                    ()->new BusinessException(ErrorCode.NOT_FOUND_STORE)
+            );
+            return new GetStoreDto(null,
+                    store.getName(),
+                    store.getImageUrl(),
+                    store.getDescription());
+        }
+
         // 기존코드 사장님에 있던 메서드와 중복으로 해당 메서드 사용
         return getGetMenuList(store);
     }
@@ -81,9 +93,9 @@ public class StoreService {
     // 사장님 가게,메뉴 리스트 얻기
     @Transactional(readOnly = true)
     public GetStoreDto getOwnerStore(Owner owner) {
-
         Store store = storeRepository.findAllJoinFetch(owner);
-        if (store == null) {
+
+        if(store == null){
             store = storeRepository.findByOwner(owner);
             return new GetStoreDto(null,
                     store.getName(),
@@ -161,7 +173,10 @@ public class StoreService {
 
     @NotNull
     private GetStoreDto getGetMenuList(Store store) {
+        // store null 인경우 (munu와 조인하였을때)
 
+        
+        // munu 목록 얻기
         List<Menu> menus = store.getMenuList();
 
         List<GetMenuListDto> menuLists = new ArrayList<>();
