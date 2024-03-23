@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         if (authResult.getPrincipal() instanceof OwnerDetailsImpl) {
             email = ((OwnerDetailsImpl) authResult.getPrincipal()).getUser().getEmail();
         } else if (authResult.getPrincipal() instanceof UserDetailsImpl) {
-            email = ((OwnerDetailsImpl) authResult.getPrincipal()).getUser().getEmail();
+            email = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getEmail();
         }
 
         String accessToken = jwtTokenProvider.createAccessToken(email);
