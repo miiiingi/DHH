@@ -101,20 +101,14 @@ public class StoreService {
     // 사장님 가게 정보 수정
     @Transactional
     public void updateOwnerStore(Owner owner, UpdateStoreDto requestDto, MultipartFile file) throws IOException {
-//
-//        //  이전 가게 이미지 삭제
-        Store store = storeRepository.findByOwner(owner);
-        String previousS3UrlText = store.getImageUrl();
-        log.info(previousS3UrlText);
-        String keyName = previousS3UrlText.substring(previousS3UrlText.lastIndexOf("/") + 1);
-        s3Service.delete(keyName);
 
-        //  새로운 가게 이미지 등록
-        String s3FileName = UUID.randomUUID() + file.getOriginalFilename();
-        s3Service.upload(file, s3FileName);
-        String s3UrlText = s3Client.getUrl(bucket, s3FileName).toString();
+        Store store = storeRepository.findByOwner(owner);
+
+        String fullPath = uploadDir + file.getOriginalFilename();
+        file.transferTo(new File(fullPath));
+
         store.update(requestDto.name(),
-                s3UrlText,
+                fullPath,
                 requestDto.address(),
                 requestDto.description(),
                 file.getOriginalFilename());
@@ -123,6 +117,8 @@ public class StoreService {
 
 
     /**
+     *
+     *
      * @param owner
      */
 
@@ -149,9 +145,9 @@ public class StoreService {
     private List<StoreListDto> mapStoresToDto(List<Store> stores) {
         return stores.stream()
                 .map(store -> new StoreListDto(
-                        store.getId(),
-                        store.getName(),
-                        store.getImageUrl()))
+                                store.getId(),
+                                store.getName(),
+                                store.getImageUrl()))
                 .toList();
     }
 
@@ -173,7 +169,7 @@ public class StoreService {
                     )
             );
         }
-        return new GetStoreDto(menuLists, store.getName(), store.getImageUrl());
+        return new GetStoreDto(menuLists, store.getName());
     }
 
 
