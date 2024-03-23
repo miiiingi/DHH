@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>사장님 페이지</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Deliever_Hang_Hae</title>
@@ -45,8 +43,36 @@
     </style>
 </head>
 <body>
-<div>
-<!--    <h2>사장님 잔액: <span th:text="${mainResponseDto.ownersPoint}"></span></h2>-->
+
+<header data-bs-theme="dark">
+    <!-- nav -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container">
+            <a th:href="@{/v2/store}" class="navbar-brand d-flex align-items-center">
+                <img th:src="@{/images/logo.png}" width="200em" height="auto" alt="">
+            </a>
+            <a class="btn" href="javascript:logout()">로그아웃</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/v2/store}">My Store</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/v2}">주문내역확인</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="content">
+    <h2>사장님 잔액: <span th:text="${mainResponseDto.ownersPoint}"></span></h2>
 </div>
 
 <div th:if="${mainResponseDto == null or mainResponseDto.orderList == null}">

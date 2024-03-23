@@ -24,6 +24,7 @@ import study.deliveryhanghae.domain.store.repository.StoreRepository;
 import study.deliveryhanghae.global.config.s3.S3Service;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -101,14 +102,20 @@ public class StoreService {
     // 사장님 가게 정보 수정
     @Transactional
     public void updateOwnerStore(Owner owner, UpdateStoreDto requestDto, MultipartFile file) throws IOException {
-
+//
+//        //  이전 가게 이미지 삭제
         Store store = storeRepository.findByOwner(owner);
+        String previousS3UrlText = store.getImageUrl();
+        log.info(previousS3UrlText);
+        String keyName = previousS3UrlText.substring(previousS3UrlText.lastIndexOf("/") + 1);
+        s3Service.delete(keyName);
 
-        String fullPath = uploadDir + file.getOriginalFilename();
-        file.transferTo(new File(fullPath));
-
+        //  새로운 가게 이미지 등록
+        String s3FileName = UUID.randomUUID() + file.getOriginalFilename();
+        s3Service.upload(file, s3FileName);
+        String s3UrlText = s3Client.getUrl(bucket, s3FileName).toString();
         store.update(requestDto.name(),
-                fullPath,
+                s3UrlText,
                 requestDto.address(),
                 requestDto.description(),
                 file.getOriginalFilename());
@@ -117,8 +124,6 @@ public class StoreService {
 
 
     /**
-     *
-     *
      * @param owner
      */
 
@@ -145,9 +150,9 @@ public class StoreService {
     private List<StoreListDto> mapStoresToDto(List<Store> stores) {
         return stores.stream()
                 .map(store -> new StoreListDto(
-                                store.getId(),
-                                store.getName(),
-                                store.getImageUrl()))
+                        store.getId(),
+                        store.getName(),
+                        store.getImageUrl()))
                 .toList();
     }
 
@@ -169,7 +174,7 @@ public class StoreService {
                     )
             );
         }
-        return new GetStoreDto(menuLists, store.getName());
+        return new GetStoreDto(menuLists, store.getName(), store.getImageUrl());
     }
 
 
