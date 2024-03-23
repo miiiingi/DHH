@@ -49,7 +49,7 @@ public class StoreService {
     // 선택한 업장, 해당 업장의 메뉴 목록 반환
     public GetStoreDto getStore(Long storeId) {
 
-        Store store = storeRepository.getReferenceById(storeId);
+        Store store = storeRepository.findAllJoinFetch(storeId);
 
         // 기존코드 사장님에 있던 메서드와 중복으로 해당 메서드 사용
         return getGetMenuList(store);
@@ -78,7 +78,7 @@ public class StoreService {
     @Transactional(readOnly = true)
     public GetStoreDto getOwnerStore(Owner owner) {
 
-        Store store = storeRepository.findByOwner(owner);
+        Store store = storeRepository.findAllJoinFetch(owner);
 
         return getGetMenuList(store);
     }
@@ -147,7 +147,7 @@ public class StoreService {
 
     @NotNull
     private GetStoreDto getGetMenuList(Store store) {
-        List<Menu> menus = menuRepository.findByStore(store);
+        List<Menu> menus = store.getMenuList();
 
         List<GetMenuListDto> menuLists = new ArrayList<>();
 
