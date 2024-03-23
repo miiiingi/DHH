@@ -22,7 +22,10 @@ public class JwtTokenProvider {
 
     // 로그 설정
     public static final Logger logger = LoggerFactory.getLogger("JWT 관련 로그");
+    // Header Key
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    // Token 식별자
+    public static final String BEARER_PREFIX = "Bearer ";
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -33,8 +36,6 @@ public class JwtTokenProvider {
     @Value("${spring.jwt.token.refresh-expiration-time}")
     private long refreshExpirationTime;
     private final UserDetailsServiceImpl userDetailsService;
-
-
 
     public JwtTokenProvider(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -49,13 +50,13 @@ public class JwtTokenProvider {
     /**
      * Access 토큰 생성
      */
-    public String createAccessToken(Authentication authentication){
-        Claims claims = Jwts.claims().setSubject(authentication.getName());
+    public String createAccessToken(String email){
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + accessExpirationTime);
 
-        return Jwts.builder()
-                .setClaims(claims)
+        return BEARER_PREFIX + Jwts.builder()
+                .setSubject(email) // 사용자 식별자값(ID)
+                .claim("email", email)
                 .setIssuedAt(now)
                 .setExpiration(expireDate)
                 .signWith(getSigningKey())
@@ -65,12 +66,14 @@ public class JwtTokenProvider {
     /**
      * Refresh 토큰 생성
      */
-    public String createRefreshToken(){
+    public String createRefreshToken(String email){
         Date now = new Date();
         Date expireDate = new Date(now.getTime() + refreshExpirationTime);
 
         // refresh Token 반환
-        return Jwts.builder()
+        return BEARER_PREFIX + Jwts.builder()
+                .setSubject(email) // 사용자 식별자값(ID)
+                .claim("email", email)
                 .setIssuedAt(now)
                 .setExpiration(expireDate)
                 .signWith(getSigningKey())
@@ -115,7 +118,7 @@ public class JwtTokenProvider {
      */
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+        if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
         }
         return null;
