@@ -1,7 +1,9 @@
 package study.deliveryhanghae.domain.menu.service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,12 +15,14 @@ import study.deliveryhanghae.domain.owner.entity.Owner;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.GetMenuListDto;
 import study.deliveryhanghae.domain.store.entity.Store;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
+import study.deliveryhanghae.global.config.security.s3.S3Service;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.UUID;
 
 import static study.deliveryhanghae.global.handler.exception.ErrorCode.NOT_FOUND_STORE_MENU;
 
@@ -30,21 +34,23 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
 
-
-    private final String uploadDir = "/Users/aper/Desktop/DHH/DHH/src/main/resources/static/images/";
-
+    private final S3Service s3Service;
+    private final AmazonS3 s3Client;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     // 메뉴 추가
     @Transactional
     public void createMenu(CreateMenuDto requestDto, Owner owner) throws IOException {
         // owner 정보에서 가게 정보 뽑기
         Store store = getStoreByOwner(owner);
-
         MultipartFile file = requestDto.menuImg();
         String originFileName = file.getOriginalFilename(); // img 원본 이름
-        String imageUrl = uploadDir + originFileName; // 사진 저장 경로 + 원본 이름
-        file.transferTo(new File(imageUrl));
-        Menu menu = requestDto.toEntity(store, imageUrl, originFileName);
+        String s3FileName = UUID.randomUUID() + originFileName;
+        String s3UrlText = s3Client.getUrl(bucket, s3FileName).toString();
+        s3Service.delete(s3FileName);
+        s3Service.upload(file, s3FileName);
+        Menu menu = requestDto.toEntity(store, s3UrlText, originFileName);
 
         menuRepository.save(menu);
     }
@@ -76,11 +82,16 @@ public class MenuService {
     public void updateMenu(Long id, UpdateMenuDto requestDto, MultipartFile menuImg) throws IOException {
         // 메뉴 존재하는지 확인
         Menu menu = hasMenu(id);
+        String previousS3UrlText = menu.getImageUrl();
+        String keyName = previousS3UrlText.substring(previousS3UrlText.lastIndexOf("/") + 1);
+        s3Service.delete(keyName);
 
         if(menuImg != null){
-            String fullPath = uploadDir + menuImg.getOriginalFilename();
-            menuImg.transferTo(new File(fullPath));
-            menu.imgUpdate(fullPath, menuImg.getOriginalFilename());
+            String originFileName = menuImg.getOriginalFilename(); // img 원본 이름
+            String s3FileName = UUID.randomUUID() + originFileName;
+            s3Service.upload(menuImg, s3FileName);
+            String s3UrlText = s3Client.getUrl(bucket, s3FileName).toString();
+            menu.imgUpdate(s3UrlText, originFileName);
         }
         // 메뉴 업데이트
         menu.update(
