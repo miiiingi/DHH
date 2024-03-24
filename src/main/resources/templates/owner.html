@@ -75,11 +75,11 @@
     <h2>사장님 잔액: <span th:text="${mainResponseDto.ownersPoint}"></span></h2>
 </div>
 
-    <div th:if="${mainResponseDto == null or mainResponseDto.orderList == null}">
-        주문이 없습니다.
-    </div>
-    <div th:if="${mainResponseDto != null and mainResponseDto.orderList != null}">
-        <table>
+<div th:if="${mainResponseDto == null or mainResponseDto.orderList == null}">
+    <p>주문이 없습니다.</p>
+</div>
+<div th:if="${mainResponseDto != null and mainResponseDto.orderList != null}">
+    <table>
 
         <thead>
         <tr>

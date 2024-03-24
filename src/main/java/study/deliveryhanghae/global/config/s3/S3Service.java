@@ -1,4 +1,4 @@
-package study.deliveryhanghae.global.config.security.s3;
+package study.deliveryhanghae.global.config.s3;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.HttpMethod;
