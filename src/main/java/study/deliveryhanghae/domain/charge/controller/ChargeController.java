@@ -1,6 +1,7 @@
 package study.deliveryhanghae.domain.charge.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import study.deliveryhanghae.domain.charge.dto.ChargeRequestDto.ChargeCallBackDto;
 import study.deliveryhanghae.domain.charge.dto.ChargeResponseDto.ChargeDto;
 import study.deliveryhanghae.domain.charge.service.ChargeService;
@@ -18,6 +18,7 @@ import study.deliveryhanghae.global.config.security.user.UserDetailsImpl;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
+@Tag(name = "Charge API", description = "결제 관련 API")
 public class ChargeController {
     private final ChargeService chargeService;
 

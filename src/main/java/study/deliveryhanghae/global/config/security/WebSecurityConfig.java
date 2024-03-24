@@ -30,11 +30,13 @@ public class WebSecurityConfig {
             "/v2/login",
             "/v2/signup",
             "/signup",
+            "/logout",
             "/mailSend",
             "/actuator/**",
             "/error",
             "/v1/**",
-            "/logout"
+            "/swagger-ui/**",
+            "/v3/api-docs/**"
     };
 
     private final JwtTokenProvider jwtTokenProvider;
