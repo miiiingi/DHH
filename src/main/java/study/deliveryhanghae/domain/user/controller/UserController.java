@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import study.deliveryhanghae.domain.user.dto.UserRequestDto.SignupRequestRecord;
 import study.deliveryhanghae.domain.user.service.UserService;
 import study.deliveryhanghae.global.config.security.jwt.TokenService;
+import study.deliveryhanghae.global.config.security.user.UserDetailsImpl;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 
 import java.util.HashMap;
@@ -70,9 +72,9 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public String logoutUser(@RequestBody String requestToken) {
+    public String logoutUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         // Refresh 토큰을 Redis에서 삭제
-        tokenService.deleteRefreshToken(requestToken);
+        tokenService.deleteRefreshToken(userDetails.getUser().getEmail());
         return "redirect:/v1/login";
     }
 

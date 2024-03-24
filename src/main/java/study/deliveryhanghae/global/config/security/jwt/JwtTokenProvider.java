@@ -4,13 +4,16 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
@@ -26,6 +29,7 @@ public class JwtTokenProvider {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
+    public static final String REFRESH_TOKEN = "Refresh";
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -35,6 +39,12 @@ public class JwtTokenProvider {
 
     @Value("${spring.jwt.token.refresh-expiration-time}")
     private long refreshExpirationTime;
+
+    private final TokenService tokenService;
+
+    public JwtTokenProvider(TokenService tokenService) {
+        this.tokenService = tokenService;
+    }
 
     // 보안 문제로 변경 : signWith(SignatureAlgorithm, java.lang.String) -> signWith(Key key)
     private Key getSigningKey() {
@@ -56,6 +66,7 @@ public class JwtTokenProvider {
                 .setExpiration(expireDate)
                 .signWith(getSigningKey())
                 .compact();
+
     }
 
     /**
@@ -74,7 +85,7 @@ public class JwtTokenProvider {
     }
 
     // 토큰 검증
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, String email, HttpServletResponse res) {
         try {
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
             return true;
@@ -82,6 +93,11 @@ public class JwtTokenProvider {
             logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (ExpiredJwtException e) {
             logger.error("Expired JWT token, 만료된 JWT token 입니다.");
+            // access Token 만료시 재발급
+            String refreshToken = resolveToken(tokenService.getRefreshToken(email));
+            tokenService.verifiedRefreshToken(refreshToken);
+            token = createAccessToken(email);
+            res.addHeader(JwtTokenProvider.AUTHORIZATION_HEADER, token);
         } catch (UnsupportedJwtException e) {
             logger.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
@@ -102,10 +118,11 @@ public class JwtTokenProvider {
         if (token != null && token.startsWith(BEARER_PREFIX)) {
             return token.substring(7);
         }
-        return null;
+        logger.error("Not Found Token");
+        throw new NullPointerException("Not Found Token");
     }
 
-    public String getTokenFromRequest(HttpServletRequest req) {
+    public String getAccessTokenFromRequest(HttpServletRequest req) {
         Cookie[] cookies = req.getCookies();
 
         if(cookies != null) {
