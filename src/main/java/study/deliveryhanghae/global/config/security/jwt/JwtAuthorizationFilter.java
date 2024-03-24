@@ -1,7 +1,6 @@
 package study.deliveryhanghae.global.config.security.jwt;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import study.deliveryhanghae.global.config.security.UserDetailsServiceImpl;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -35,15 +33,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String accessToken = jwtTokenProvider.getAccessTokenFromRequest(req);
 
-        log.info("accessToken : " + accessToken);
-
         if (StringUtils.hasText(accessToken)) {
             // JWT 토큰 substring
             accessToken = jwtTokenProvider.resolveToken(accessToken);
 
             Claims info = jwtTokenProvider.getUserInfoFromToken(accessToken);
-
-            log.info("info : " + info);
 
             if (!jwtTokenProvider.validateToken(accessToken, info.getSubject(), res)) {
                 log.error("Token Error");
@@ -65,7 +59,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     public void setAuthentication(String username) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = createUserAuthentication(username);
-        log.info("authentication : " + authentication);
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
     }
