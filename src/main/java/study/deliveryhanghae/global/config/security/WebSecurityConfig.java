@@ -16,34 +16,49 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
-import study.deliveryhanghae.global.config.security.jwt.JwtAuthenticationFilter;
-import study.deliveryhanghae.global.config.security.jwt.JwtAuthorizationFilter;
-import study.deliveryhanghae.global.config.security.jwt.JwtUtil;
+import study.deliveryhanghae.global.config.security.jwt.*;
+import study.deliveryhanghae.global.handler.CustomAccessDeniedHandler;
+import study.deliveryhanghae.global.handler.CustomAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
 
-    String[] APP_WHITE_LIST = {"/v2/login-page", "/v2/login", "/v2/signup", "/v1/login", "/v1/signup", "/signup", "/mailSend", "/favicon.ico"};
+    String[] APP_WHITE_LIST = {
+                                "/v2/login-page",
+                                "/v2/login",
+                                "/v2/signup",
+                                "/signup",
+                                "/mailSend",
+                                "/error",
+                                "/v1/**",
+                                "/logout"
+                            };
 
-    private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final CorsConfigurationSource corsConfigurationSource;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final TokenService tokenService;
+    private final UserDetailsServiceImpl userDetailsService;
 
 
     @Autowired
-    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration, CorsConfigurationSource corsConfigurationSource) {
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
+    public WebSecurityConfig(JwtTokenProvider jwtTokenProvider, AuthenticationConfiguration authenticationConfiguration, CorsConfigurationSource corsConfigurationSource, CustomAuthenticationEntryPoint customAuthenticationEntryPoint, CustomAccessDeniedHandler customAccessDeniedHandler, TokenService tokenService, UserDetailsServiceImpl userDetailsService) {
+        this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationConfiguration = authenticationConfiguration;
         this.corsConfigurationSource = corsConfigurationSource;
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
+        this.customAccessDeniedHandler = customAccessDeniedHandler;
+        this.tokenService = tokenService;
+        this.userDetailsService = userDetailsService;
     }
 
 
     public JwtAuthenticationFilter ownerLoginFilter() throws Exception {
-        JwtAuthenticationFilter ownerFilter = new JwtAuthenticationFilter(jwtUtil);
+        JwtAuthenticationFilter ownerFilter = new JwtAuthenticationFilter(jwtTokenProvider, tokenService);
         // owner Login 링크 연결
         ownerFilter.setFilterProcessesUrl("/v2/login");
         ownerFilter.setAuthenticationManager(authenticationManager());
@@ -51,7 +66,7 @@ public class WebSecurityConfig {
     }
 
     public JwtAuthenticationFilter userLoginFilter() throws Exception {
-        JwtAuthenticationFilter userFilter = new JwtAuthenticationFilter(jwtUtil);
+        JwtAuthenticationFilter userFilter = new JwtAuthenticationFilter(jwtTokenProvider, tokenService);
         // user Login 링크 연결
         userFilter.setFilterProcessesUrl("/login");
         userFilter.setAuthenticationManager(authenticationManager());
@@ -61,11 +76,6 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
     }
 
     @Bean
@@ -88,19 +98,22 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource)) // cors 처리
+                .csrf(AbstractHttpConfigurer::disable) // csrf off
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // static resources permitAll
                         .requestMatchers(APP_WHITE_LIST).permitAll()
-                        .requestMatchers("/v1/**").permitAll()
                         .anyRequest().authenticated());
 
-        http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
-        http.addFilterBefore(ownerLoginFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(userLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterBefore(new JwtFilter(jwtTokenProvider, userDetailsService), JwtAuthenticationFilter.class)
+                .addFilterBefore(ownerLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(userLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling((exceptionConfig) -> exceptionConfig
+                        .authenticationEntryPoint(customAuthenticationEntryPoint) // 401 처리
+                        .accessDeniedHandler(customAccessDeniedHandler)); // 403 처리
 
         return http.build();
     }

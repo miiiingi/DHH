@@ -21,11 +21,8 @@ import study.deliveryhanghae.domain.store.dto.StoreResponseDto.GetStoreDto;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
 import study.deliveryhanghae.domain.store.entity.Store;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
-import study.deliveryhanghae.global.config.security.s3.S3Service;
-
-import java.io.File;
+import study.deliveryhanghae.global.config.s3.S3Service;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -78,6 +75,7 @@ public class StoreService {
         s3Service.delete(s3FileName);
         s3Service.upload(file, s3FileName);
         Owner ownerDB = ownerRepository.getReferenceById(owner.getId());
+
         ownerDB.hasStore();
         storeRepository.save(requestDto.toEntity(ownerDB, s3UrlText, file.getOriginalFilename()));
     }
@@ -174,7 +172,7 @@ public class StoreService {
                     )
             );
         }
-        return new GetStoreDto(menuLists, store.getName());
+        return new GetStoreDto(menuLists, store.getName(), store.getImageUrl());
     }
 
 

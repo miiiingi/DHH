@@ -18,33 +18,31 @@ import study.deliveryhanghae.global.config.security.UserDetailsServiceImpl;
 import java.io.IOException;
 
 @Slf4j(topic = "JWT 검증 및 인가")
-public class JwtAuthorizationFilter extends OncePerRequestFilter {
+public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService1) {
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService1;
+    public JwtFilter(JwtTokenProvider jwtTokenProvider, UserDetailsServiceImpl userDetailsService) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
     }
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
-        String tokenValue = jwtUtil.getTokenFromRequest(req);
+        String tokenValue = jwtTokenProvider.getTokenFromRequest(req);
 
         if (StringUtils.hasText(tokenValue)) {
             // JWT 토큰 substring
-            tokenValue = jwtUtil.substringToken(tokenValue);
-            log.info("tokenValue : " + tokenValue);
+            tokenValue = jwtTokenProvider.resolveToken(tokenValue);
 
-            if (!jwtUtil.validateToken(tokenValue)) {
+            if (!jwtTokenProvider.validateToken(tokenValue)) {
                 log.error("Token Error");
                 return;
             }
 
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            Claims info = jwtTokenProvider.getUserInfoFromToken(tokenValue);
 
             try {
                 setAuthentication(info.getSubject());
@@ -62,7 +60,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = createUserAuthentication(username);
         context.setAuthentication(authentication);
-
         SecurityContextHolder.setContext(context);
     }
 
