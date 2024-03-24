@@ -3,6 +3,7 @@ package study.deliveryhanghae.domain.charge.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,12 +21,14 @@ import study.deliveryhanghae.global.config.security.user.UserDetailsImpl;
 @RequiredArgsConstructor
 public class ChargeController {
     private final ChargeService chargeService;
-
+    @Value("${iamport.impKey}")
+    private String impKey;
     @Operation(summary = "결제 페이지", description = "유저의 결제 항목을 조회합니다.")
     @GetMapping("/v2/charge")
     public String chargePage(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model){
         ChargeDto chargeDto = chargeService.preChargeProcess(userDetails.getUser().getId());
         model.addAttribute("chargeDto", chargeDto);
+        model.addAttribute("impKey", impKey);
         return "charge";
     }
 

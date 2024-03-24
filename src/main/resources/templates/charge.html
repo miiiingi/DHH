@@ -19,7 +19,8 @@
 
 
         var IMP = window.IMP;
-        IMP.init("imp 번호");
+        var impKey = "[[${impKey}]]";
+        IMP.init(impKey);
 
         var paymentAmount = document.getElementById('paymentAmount').value;
 
@@ -89,7 +90,7 @@
                             window.location.href = "/v1";
                         })
                     } else {
-                        //alert("success? "+ rsp.success+ ", 결제에 실패하였습니다. 에러 내용: " + JSON.stringify(rsp));
+                        alert("success? "+ rsp.success+ ", 결제에 실패하였습니다. 에러 내용: " + JSON.stringify(rsp));
                         alert('결제 실패!');
                     }
                 });
