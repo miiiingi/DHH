@@ -22,8 +22,8 @@ public class TokenService {
         redisTemplate.opsForValue().set(refreshToken, email, Duration.ofDays(3)); // 3일간 유효
     }
 
-    public String getRefreshToken(String accessToken) {
-        return String.valueOf(redisTemplate.opsForValue().get(accessToken));
+    public String getRefreshToken(String email) {
+        return String.valueOf(redisTemplate.opsForValue().get(email));
     }
 
     public void verifiedRefreshToken(String refreshToken) {
@@ -32,7 +32,8 @@ public class TokenService {
         }
     }
 
-    public void deleteRefreshToken(String refreshToken) {
+    public void deleteRefreshToken(String email) {
+        String refreshToken = getRefreshToken(email);
         // Refresh 토큰 삭제
         redisTemplate.delete(refreshToken);
     }
