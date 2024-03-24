@@ -20,9 +20,10 @@ import study.deliveryhanghae.domain.store.dto.StoreResponseDto.GetStoreDto;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
 import study.deliveryhanghae.domain.store.entity.Store;
 import study.deliveryhanghae.domain.store.repository.StoreRepository;
-import study.deliveryhanghae.global.config.security.s3.S3Service;
+import study.deliveryhanghae.global.config.s3.S3Service;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
