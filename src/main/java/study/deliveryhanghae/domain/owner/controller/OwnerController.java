@@ -69,11 +69,8 @@ public class OwnerController {
         if (!userDetails.getOwner().isStoreStatus()) {
             return "storeRegister";
         }
-        List<getOrderDto> orderList = orderService.getOrderList();
-        GetMainDto mainResponseDto = new GetMainDto(orderList, ownerService.getOwnerPoint(userDetails.getOwner().getId()));
-
+        GetMainDto mainResponseDto = orderService.getOrderList(userDetails.getOwner());
         model.addAttribute("mainResponseDto", mainResponseDto);
-
         return "owner";
     }
 

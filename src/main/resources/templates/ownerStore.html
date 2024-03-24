@@ -69,7 +69,7 @@
             <a th:href="@{/v2/store}" class="navbar-brand d-flex align-items-center">
                 <img th:src="@{/images/logo.png}" width="200em" height="auto" alt="">
             </a>
-                <a class="btn" href="javascript:logout()">로그아웃</a>
+            <a class="btn" href="javascript:logout()">로그아웃</a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,13 +105,15 @@
                         <li>
                             <div>
                                 <strong class="d-block" th:text="${store.storeName()}">가게 이름</strong>
+
                                 <img th:src="@{${store.storeUrl()}}" class="rounded mx-auto d-block" alt="가게 썸네일" width="200px" height="200px" >
+
                             </div>
                         </li>
                         <li>
                             <div>
                                 <strong class="d-block">가게 소개</strong>
-<!--                                <small th:text="${storeDesc}"></small>-->
+                                <small th:text="${store.storeDesc()}"></small>
                             </div>
                         </li>
                     </ul>
@@ -202,7 +204,8 @@
                     <div class="card mb-3" style="max-width: 540px;" th:each="menu : ${store.menuLists()}">
                         <div class="row g-0">
                             <div class="col-md-4">
-                                <img th:src="@{${menu.menuUrl()}}" th:id="img_ + ${menu.menuId()}" class="img-fluid rounded-start" width="225" height="100%" alt="">
+                                <img th:src="@{${menu.menuUrl()}}" th:id="img_ + ${menu.menuId()}"
+                                     class="img-fluid rounded-start" width="225" height="100%">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
@@ -268,10 +271,10 @@
         }
     });
 
-    $("#file").on("change", function(e) {
+    $("#file").on("change", function (e) {
         let fileVal = $("#file").val();
 
-        if( fileVal !== "" ) {
+        if (fileVal !== "") {
             const ext = fileVal.split('.').pop().toLowerCase(); //확장자분리
             //아래 확장자가 있는지 체크
             if ($.inArray(ext, ['jpg', 'jpeg', 'png']) === -1) {
@@ -289,10 +292,10 @@
         }
     });
 
-    $("#menuImg").on("change", function(e) {
+    $("#menuImg").on("change", function (e) {
         let fileVal = $("#menuImg").val();
 
-        if( fileVal !== "" ) {
+        if (fileVal !== "") {
             const ext = fileVal.split('.').pop().toLowerCase(); //확장자분리
             //아래 확장자가 있는지 체크
             if ($.inArray(ext, ['jpg', 'jpeg', 'png']) === -1) {
@@ -330,7 +333,7 @@
 
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('request', new Blob([JSON.stringify((jsonData))],{type: "application/json"}));
+        formData.append('request', new Blob([JSON.stringify((jsonData))], {type: "application/json"}));
 
 
         $.ajax({
@@ -339,11 +342,11 @@
             processData: false,
             contentType: false,
             data: formData,
-            success: function(response){
+            success: function (response) {
                 alert("성공");
                 window.location.href = "/v2/store";
             },
-            error: function(request, status, error){
+            error: function (request, status, error) {
                 alert(error)
             }
         });
@@ -403,8 +406,6 @@
             }
         });
     }
-
-
 
 
     // 메뉴 수정 클릭시 해당 페이지 이동

@@ -32,10 +32,10 @@ public class Store {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "store", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Menu> menuList = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="owner_id")
     private Owner owner;
 
