@@ -18,12 +18,12 @@ import study.deliveryhanghae.global.config.security.UserDetailsServiceImpl;
 import java.io.IOException;
 
 @Slf4j(topic = "JWT 검증 및 인가")
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public JwtFilter(JwtTokenProvider jwtTokenProvider, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthorizationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsServiceImpl userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
     }
@@ -31,18 +31,18 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
-        String tokenValue = jwtTokenProvider.getTokenFromRequest(req);
+        String accessToken = jwtTokenProvider.getAccessTokenFromRequest(req);
 
-        if (StringUtils.hasText(tokenValue)) {
+        if (StringUtils.hasText(accessToken)) {
             // JWT 토큰 substring
-            tokenValue = jwtTokenProvider.resolveToken(tokenValue);
+            accessToken = jwtTokenProvider.resolveToken(accessToken);
 
-            if (!jwtTokenProvider.validateToken(tokenValue)) {
+            Claims info = jwtTokenProvider.getUserInfoFromToken(accessToken);
+
+            if (!jwtTokenProvider.validateToken(accessToken, info.getSubject(), res)) {
                 log.error("Token Error");
                 return;
             }
-
-            Claims info = jwtTokenProvider.getUserInfoFromToken(tokenValue);
 
             try {
                 setAuthentication(info.getSubject());

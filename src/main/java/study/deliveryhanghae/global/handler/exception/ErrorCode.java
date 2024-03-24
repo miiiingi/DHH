@@ -11,6 +11,9 @@ public enum ErrorCode {
     INVALID_TYPE_VALUE(400, "C005", " Invalid Type Value"),
     HANDLE_ACCESS_DENIED(403, "C006", "Forbidden Access"),
     UNAUTHORIZED(401, "C007", "Unauthorized"),
+    REDIS_ERROR(500, "R001", "Redis Error"),
+    INVALID_JWT(502, "R002", "Jwt Invalid Error"),
+    REFRESH_TOKEN_NOT_EXISTS(400, "R003", "refresh token not exists"),
 
     // Member
     ALREADY_EXIST_EMAIL(400, "M001", "이미 가입된 이메일입니다."),
@@ -18,6 +21,7 @@ public enum ErrorCode {
     ALREADY_EXIST_NICKNAME(400, "M003", "이미 가입된 닉네임입니다."),
     NOT_MATCH_EMAIL_PASSWORD(400, "M004", "이메일 혹은 비밀번호가 틀렸습니다. 이메일 혹은 비밀번호를 확인하세요."),
     EMAIL_SEND_FAILURE(400, "M005", "이메일이 발송되지 않았습니다. 이메일을 다시 확인하세요."),
+    ALREADY_EXIST_EMAIL_USER(400, "M006", "고객님 계정으로 가입한 이메일은 사장님 계정으로 가입할 수 없습니다."),
 
     // Pay
     PAYMENT_REQUIRED(402, "P001","잔액 부족입니다."),
@@ -32,8 +36,9 @@ public enum ErrorCode {
     // STORE
     NOT_FOUND_STORE(400, "S001", "가게 정보가 없습니다."),
     NOT_FOUND_STORE_MENU(400, "S002", "해당하는 메뉴가 없습니다."),
-    REDIS_ERROR(500, "R001", "Redis Error"),
-    INVALID_JWT(502, "R002", "Jwt Invalid Error");
+
+    ;
+
     private final String code;
     private final String message;
     private final int status;

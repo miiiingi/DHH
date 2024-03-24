@@ -26,15 +26,16 @@ public class WebSecurityConfig {
 
 
     String[] APP_WHITE_LIST = {
-                                "/v2/login-page",
-                                "/v2/login",
-                                "/v2/signup",
-                                "/signup",
-                                "/mailSend",
-                                "/error",
-                                "/v1/**",
-                                "/logout"
-                            };
+            "/v2/login-page",
+            "/v2/login",
+            "/v2/signup",
+            "/signup",
+            "/mailSend",
+            "/actuator/**",
+            "/error",
+            "/v1/**",
+            "/logout"
+    };
 
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationConfiguration authenticationConfiguration;
@@ -79,6 +80,11 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public JwtAuthorizationFilter jwtAuthorizationFilter() {
+        return new JwtAuthorizationFilter(jwtTokenProvider, userDetailsService);
+    }
+
+    @Bean
     public AuthenticationFailureHandler customAuthenticationFailureHandler() {
         return (request, response, exception) -> {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -108,7 +114,7 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated());
 
         http
-                .addFilterBefore(new JwtFilter(jwtTokenProvider, userDetailsService), JwtAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class)
                 .addFilterBefore(ownerLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(userLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling((exceptionConfig) -> exceptionConfig
