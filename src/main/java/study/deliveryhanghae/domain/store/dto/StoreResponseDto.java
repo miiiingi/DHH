@@ -12,6 +12,7 @@ public class StoreResponseDto{
             String storeName,
             String storeUrl,
             String storeDesc
+
     ) {
     }
 

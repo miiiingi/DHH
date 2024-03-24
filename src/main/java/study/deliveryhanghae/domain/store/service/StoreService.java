@@ -24,6 +24,7 @@ import study.deliveryhanghae.global.config.security.s3.S3Service;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,7 @@ public class StoreService {
         s3Service.delete(s3FileName);
         s3Service.upload(file, s3FileName);
         Owner ownerDB = ownerRepository.getReferenceById(owner.getId());
+
         ownerDB.hasStore();
         storeRepository.save(requestDto.toEntity(ownerDB, s3UrlText, file.getOriginalFilename()));
     }
@@ -192,7 +194,9 @@ public class StoreService {
                     )
             );
         }
+
         return new GetStoreDto(menuLists, store.getName(), store.getImageUrl(), store.getDescription());
+
     }
 
 
