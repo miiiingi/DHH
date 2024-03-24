@@ -14,6 +14,7 @@ import study.deliveryhanghae.domain.order.service.OrderService;
 import study.deliveryhanghae.domain.owner.dto.OwnerRequestDto;
 import study.deliveryhanghae.domain.owner.dto.OwnerResponseDto.GetMainDto;
 import study.deliveryhanghae.domain.owner.service.OwnerService;
+import study.deliveryhanghae.global.aop.Timer;
 import study.deliveryhanghae.global.config.security.owner.OwnerDetailsImpl;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 
@@ -43,7 +44,6 @@ public class OwnerController {
     public String loginPage() {
         return "v2Login";
     }
-
     @Operation(summary = "회원가입", description = "회원 가입시 필요한 정보를 입력합니다.")
     @PostMapping("/v2/signup")
     public String signup(OwnerRequestDto.SignupRequestDto requestDto, Model model) {
@@ -63,6 +63,7 @@ public class OwnerController {
      * @param model
      * @return
      */
+    @Timer
     @GetMapping("/v2")
     public String getOwnerMain(@AuthenticationPrincipal OwnerDetailsImpl userDetails, Model model) {
         // 사장님 가게 가지고 있는 상태 확인하고 없으면 생성하도록 반환
