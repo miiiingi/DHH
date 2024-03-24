@@ -25,7 +25,7 @@ import study.deliveryhanghae.global.handler.CustomAuthenticationEntryPoint;
 public class WebSecurityConfig {
 
 
-    String[] APP_WHITE_LIST = {
+    private static final String[] APP_WHITE_LIST = {
                                 "/v2/login-page",
                                 "/v2/login",
                                 "/v2/signup",
@@ -34,6 +34,20 @@ public class WebSecurityConfig {
                                 "/error",
                                 "/v1/**",
                                 "/logout"
+                            };
+
+    private static final String[] SWAGGER_URL_ARRAY = {
+                                /* swagger v2 */
+                                "/v2/api-docs",
+                                "/swagger-resources",
+                                "/swagger-resources/**",
+                                "/configuration/ui",
+                                "/configuration/security",
+                                "/swagger-ui.html",
+                                "/webjars/**",
+                                /* swagger v3 */
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**"
                             };
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -110,6 +124,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // static resources permitAll
                         .requestMatchers(APP_WHITE_LIST).permitAll()
+                        .requestMatchers(SWAGGER_URL_ARRAY).permitAll()
                         .anyRequest().authenticated());
 
         http
