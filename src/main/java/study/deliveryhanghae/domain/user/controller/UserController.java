@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import study.deliveryhanghae.domain.user.dto.UserRequestDto.SignupRequestRecord;
 import study.deliveryhanghae.domain.user.service.UserService;
+import study.deliveryhanghae.global.config.security.jwt.TokenService;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
 
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final TokenService tokenService;
 
     @GetMapping("/v1/signup")
     public String signupPage(Model model) {
@@ -65,6 +67,13 @@ public class UserController {
             map.put("error", e.getMessage());
         }
         return map;
+    }
+
+    @PostMapping("/logout")
+    public String logoutUser(@RequestBody String requestToken) {
+        // Refresh 토큰을 Redis에서 삭제
+        tokenService.deleteRefreshToken(requestToken);
+        return "redirect:/v1/login";
     }
 
 }
