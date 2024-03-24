@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import study.deliveryhanghae.domain.user.dto.UserRequestDto;
 import study.deliveryhanghae.domain.user.dto.UserRequestDto.SignupRequestRecord;
 import study.deliveryhanghae.domain.user.service.UserService;
 import study.deliveryhanghae.global.config.security.jwt.TokenService;
@@ -53,8 +54,14 @@ public class UserController {
         return "redirect:/v1/login";
     }
 
+    @Operation(summary = "로그인", description = "로그인 시 필요한 정보를 입력합니다.")
+    @PostMapping("/login")
+    public void login(UserRequestDto.LoginRequestRecord requestDto) {
+    }
+
 
     // 인증 이메일 전송
+    @Operation(summary = "이메일 인증", description = "인증용 이메일을 발송합니다.")
     @PostMapping("/mailSend")
     @ResponseBody
     public HashMap<String, Object> mailSend(@RequestBody Map<String, String> body) {
@@ -71,6 +78,7 @@ public class UserController {
         return map;
     }
 
+    @Operation(summary = "로그아웃", description = "로그아웃하고 토큰을 지웁니다.")
     @PostMapping("/logout")
     public String logoutUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         // Refresh 토큰을 Redis에서 삭제

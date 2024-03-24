@@ -24,7 +24,6 @@ import study.deliveryhanghae.global.handler.CustomAuthenticationEntryPoint;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-
     private static final String[] APP_WHITE_LIST = {
                                 "/v2/login-page",
                                 "/v2/login",

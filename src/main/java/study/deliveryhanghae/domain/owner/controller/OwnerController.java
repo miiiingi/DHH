@@ -1,6 +1,7 @@
 package study.deliveryhanghae.domain.owner.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import study.deliveryhanghae.global.handler.exception.BusinessException;
 
 @Controller
 @RequiredArgsConstructor
+@Tag(name = "Owner API", description = "사장님 회원가입, 로그인")
 public class OwnerController {
     private final OrderService orderService;
     private final OwnerService ownerService;
@@ -38,6 +40,7 @@ public class OwnerController {
     public String loginPage() {
         return "v2Login";
     }
+
     @Operation(summary = "회원가입", description = "회원 가입시 필요한 정보를 입력합니다.")
     @PostMapping("/v2/signup")
     public String signup(OwnerRequestDto.SignupRequestDto requestDto, Model model) {
@@ -51,13 +54,19 @@ public class OwnerController {
         return "redirect:/v2/login-page";
     }
 
+    @Operation(summary = "로그인", description = "로그인 시 필요한 정보를 입력합니다.")
+    @PostMapping("/v2/login")
+    public void login(OwnerRequestDto.LoginRequestRecord requestDto) {
+    }
+
     /***
      *  사장님 메인 페이지 이동
-     * 
+     *
      * @param model
      * @return
      */
     @Timer
+    @Operation(summary = "메인페이지", description = "사장님 메인 페이지를 반환합니다.")
     @GetMapping("/v2")
     public String getOwnerMain(@AuthenticationPrincipal OwnerDetailsImpl userDetails, Model model) {
         // 사장님 가게 가지고 있는 상태 확인하고 없으면 생성하도록 반환
