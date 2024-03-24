@@ -1,51 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원가입 페이지</title>
-    <!-- jQuery 라이브러리를 로드합니다. -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deliever_Hang_Hae</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        .form-signup {
+            max-width: 330px;
+            padding: 1rem;
+        }
+
+        .form-signup .form-floating:focus-within {
+            z-index: 2;
+        }
+
+        .form-signup input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-signup input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    </style>
 </head>
-<body>
-<div id="login-form">
-    <div id="login-title">Sign up Delivery Hanghae</div>
-    <div class="login-id-label">E-mail</div>
-    <input type="text" id="verification-email" name="verification-email" placeholder="E-mail" class="login-input-box">
-    <button id="verify-code-btn" onclick="sendMailVerification()">메일 인증</button>
 
-    <div class="login-id-label">Verification Code</div>
-    <input type="text" id="verification-code" placeholder="Verification Code" class="login-input-box">
-    <button id="verify-btn" onclick="checkVerification()">인증번호 확인</button>
 
-    <form id="signup-form" action="/signup" method="post" onsubmit="return submitForm()">
-        <div class="login-id-label">Password</div>
-        <input type="password" id="password" name="password" placeholder="password" class="login-input-box">
+<body class="d-flex align-items-center py-4 bg-body-tertiary">
 
-        <div class="login-id-label">Confirm Password</div>
-        <input type="password" id="confirm-password" onkeyup="validatePassword()" placeholder="Confirm password"
-               class="login-input-box">
-        <div id="password-match" style="color: red;"></div>
+<main class="form-signup w-100 m-auto">
 
-        <div class="login-id-label">Address</div>
-        <input type="text" name="address" placeholder="Address" class="login-input-box">
+    <div id="signup">
+        <div class="content">
+            <div class="header">
+                <img class="mb-4" th:src="@{/images/logo.png}" alt="" width="100rem" height="57">
+                <h1 class="title fs-5 fw-bold">회원 가입</h1>
 
-        <div class="login-id-label">Nickname</div>
-        <input type="text" name="nickname" placeholder="Nickname" class="login-input-box">
+            </div>
+            <div class="body">
 
-        <!-- 에러 및 인증 메시지 표시를 위한 요소 -->
-        <div id="message-box" style="color: red;">
-            <p th:text="${ErrorMessage}" style="color: red;"></p>
+                <div class="mb-3">
+                    <label for="verification-email" class="col-form-label">mail address</label>
+                    <input type="email" class="form-control" name="verification-email" id="verification-email"
+                           placeholder="E-mail">
+                    <button id="verify-code-btn" class="btn btn-primary btn-sm mt-2" onclick="sendMailVerification()">메일
+                        인증</button>
+                </div>
+
+                <div class="mb-3">
+                    <label for="verification-code" class="col-form-label">인증번호</label>
+                    <input class="form-control" id="verification-code" placeholder="Verification Code">
+                    <button id="verify-btn" class="btn btn-primary btn-sm  mt-2" onclick="checkVerification()">인증번호 확인</button>
+                </div>
+
+                <form id="signup-form" action="/signup" method="post" onsubmit="return submitForm()">
+                    <div class="mb-3">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" name="password" id="password"
+                               placeholder="Password">
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="password" class="form-control" name="confirm-password" id="confirm-password"
+                               placeholder="비밀번호 확인" onkeyup="validatePassword()">
+                    </div>
+                    <div class="mb-3" id="password-match" style="color: red;"></div>
+
+                    <div class="mb-3">
+                        <label for="address">주소</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Address">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nickname">닉네임</label>
+                        <input type="text" class="form-control" id="nickname" name="nickname" placeholder="Nickname">
+                    </div>
+
+                    <!-- 에러 및 인증 메시지 표시를 위한 요소 -->
+                    <div id="message-box" style="color: red;">
+                        <p th:text="${ErrorMessage}" style="color: red;"></p>
+                    </div>
+
+                    <!-- 회원 가입 버튼 -->
+                    <button id="signup-btn" class="btn btn-primary w-100" onclick="submitForm()">회원 가입</button>
+
+                    <!-- 이메일 값을 전달하기 위한 숨겨진 input 필드 -->
+                    <input type="hidden" id="email" name="email">
+
+                </form>
+            </div>
         </div>
+    </div>
+</main>
 
-        <!-- 회원 가입 버튼 -->
-        <button id="signup-btn" onclick="submitForm()">회원 가입</button>
 
-        <!-- 이메일 값을 전달하기 위한 숨겨진 input 필드 -->
-        <input type="hidden" id="email" name="email">
-
-    </form>
-</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 
 <script>
     let verificationResult;
@@ -120,6 +198,6 @@
         return true;
     }
 </script>
-
 </body>
+
 </html>

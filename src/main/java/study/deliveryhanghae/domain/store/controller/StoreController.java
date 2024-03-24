@@ -46,7 +46,10 @@ public class StoreController {
     @GetMapping("/v1/search")
     public String getSearchStore(
             Model model,
-            @RequestParam("searchMenu") String searchMenu) {
+            @RequestParam(value = "searchMenu", required = false) String searchMenu) {
+        if(searchMenu==null){
+            return "redirect:/v1";
+        }
         List<StoreListDto> storeList = storeService.getSearchStroeList(searchMenu);
         model.addAttribute("stores", storeList);
         return "index";
