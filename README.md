@@ -1,5 +1,8 @@
 ## 프로젝트 명 : Delivery Hanghae
 
+### User : http://49.50.161.142:8080/v1
+### Owner : http://49.50.161.142:8080/v2/login-page
+
 ## 목차
 1. [팀원](#팀원)
 2. [요구사항](#요구사항)
@@ -46,74 +49,109 @@ http://49.50.161.142:8080/swagger-ui/index.html
 ## 프로젝트 실행 방법
 1. 해당 프로젝트를 zip파일로 다운로드한다.
 2. zip파일 압축을 풀고 사용하는 가상환경에 파일을 등록한다.
-3. DHH\src\main\java\study\deliveryhanghae\global\config 에 AppConfig 클래스 파일을 생성한다.
-   * iamport 가입 후 결제 연동 -> 가맹점 식별 코드 확인
-```java
-import com.siot.IamportRestClient.IamportClient;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-public class AppConfig {
-    String apiKey = "REST API Key 입력";
-    String secretKey="REST API Secret 입력";
-
-    @Bean
-    public IamportClient iamportClient() {
-        return new IamportClient(apiKey, secretKey);
-    }
-}
-```
-4. DHH\src\main\resources 에 application.properties 파일을 추가한다.
+3. DHH\src\main\resources 에 application.properties 파일을 추가한다.
 ```java
 //데이터 베이스 연동 정보
-spring.datasource.url=jdbc:mysql://localhost:3306/DB명
-spring.datasource.username=
-spring.datasource.password=
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-
 spring.jpa.hibernate.ddl-auto=update
-
 spring.jpa.properties.hibernate.show_sql=true
 spring.jpa.properties.hibernate.format_sql=true
 spring.jpa.properties.hibernate.use_sql_comments=true
-
-//회원가입 메일 정보
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+//redis, security
+jwt.secret.key=
+spring.data.redis.host=redis
+spring.data.redis.port=6379
+spring.jwt.token.access-expiration-time=3600000
+spring.jwt.token.refresh-expiration-time=259200000
+//메일인증
 spring.mail.host=smtp.gmail.com
-spring.mail.port=
+spring.mail.port=587
 spring.mail.username=
 spring.mail.password=
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.timeout=5000
 spring.mail.properties.mail.smtp.starttls.enable=true
-
-spring.main.allow-bean-definition-overriding=true
-
-//파일 등록 정보
-spring.servlet.multipart.enabled=true
-spring.servlet.multipart.max-file-size=5MB
-spring.servlet.multipart.max-request-size=20MB
-
-//레디스 정보
-spring.data.redis.host=localhost
-spring.data.redis.port=6379
-
-//JWT 정보
-spring.jwt.token.access-expiration-time=3600000
-spring.jwt.token.refresh-expiration-time=259200000
-jwt.secret.key=
-
-//AWS 정보
+//s3
 cloud.aws.region.static=ap-northeast-2
 cloud.aws.stack.auto-=false
 cloud.aws.credentials.accessKey=
 cloud.aws.credentials.secretKey=
 cloud.aws.s3.bucket=dhh-service-bucket
-
+//프로메테우스-그라파냐
+management.endpoints.web.exposure.include=*
+management.endpoint.prometheus.enabled=true
+//스웨거
+springdoc.swagger-ui.path=/api-test
+springdoc.swagger-ui.groups-order=DESC
+springdoc.swagger-ui.tag-sorter=alpha
+springdoc.show-login-endpoint=true
+//아임 포트 결제
+iamport.apiKey=
+iamport.secretKey=
+iamport.impKey=
 ```
-5. charge.html 파일 imp번호(가맹점 식별코드) 변경
-![image](https://github.com/miiiingi/DHH/assets/77494780/18a8416f-ac56-40a4-87fe-a67c90ee8c58)
+
 
 ## 프로그램 실행 예시
+* 사장님
+  1. 회원가입 
+![image](https://github.com/miiiingi/DHH/assets/77494780/7c0e5393-24bd-4cf9-8907-3640877ff010)
+      * 회원가입은 메일 인증이 필수입니다. 인증 번호를 확인하여 일치해야 가입이 가능합니다.
+      * 가입을 위해서는 패스워드와 패스워드 확인이 일치해야 합니다.
+      * 사장님과 유저 이메일이 일치할 경우 가입이 불가능합니다.
+
+   2. 로그인
+![image](https://github.com/miiiingi/DHH/assets/77494780/07a0ca75-4b64-4461-8051-e74231f55671)
+      * 사장님과 유저의 테이블이 분리되어 있으며, 각각 별도로 로그인이 이루어집니다.
+      * 로그인은 이메일과 비밀번호 확인 후에 일치해야 합니다.
+
+  3. 가게 등록, 수정
+![image](https://github.com/miiiingi/DHH/assets/77494780/16cd8fd0-dfc9-4bef-aaf7-040ea0716d0d)
+      * 가게 등록 시에는 실제 사업자 번호가 확인되어야 합니다.
+      * 이미지 등록 전에는 확장자 검사가 필요합니다.
+      * 모든 입력 칸이 채워져 있어야 가게 등록이 가능합니다.
+
+  4. 메뉴 등록, 수정, 삭제
+![image](https://github.com/miiiingi/DHH/assets/77494780/c50efb31-75f9-4675-a547-d5fdf4cd3f0f)
+      * 메뉴 등록 시에도 이미지 등록 전에는 확장자 검사가 필요합니다.
+      * 모든 입력 칸이 채워져 있어야 메뉴 등록이 가능합니다.
+ 
+  5. 주문 내역 확인
+![image](https://github.com/miiiingi/DHH/assets/77494780/d00a1762-0d8f-4d5f-9020-c97eb5b24ff4)
+      * 사장님은 유저의 주문 내역을 확인할 수 있습니다.
+      * 주문이 배달 완료된 후에는 배달 완료 버튼을 클릭하여 메뉴 금액을 포인트로 받을 수 있습니다.
+
+* 유저
+   1. 회원가입
+      * 사장님과 동일한 절차를 따릅니다.
+      
+   2. 로그인
+      * 사장님과 동일한 방식으로 로그인합니다.
+      
+   3. 메인
+![image](https://github.com/miiiingi/DHH/assets/77494780/ff7e3120-a687-4111-bf2e-21a80f44ffd5)
+      * 키워드로 검색하여 가게를 찾을 수 있습니다.
+      * 가게를 선택하여 상세 정보를 확인할 수 있습니다.
+
+   4. 가게 상세 조회
+![image](https://github.com/miiiingi/DHH/assets/77494780/055565ae-7211-4b67-9f0e-d62933c8821a)
+      * 가게 정보와 메뉴를 확인할 수 있습니다.
+      * 주문하기 버튼을 클릭하여 주문할 수 있습니다.
+ 
+   5. 결제
+![image](https://github.com/miiiingi/DHH/assets/77494780/13426ff2-64eb-4f40-8b16-72467193d931)
+      * 주문 가격, 보유 포인트, 잔여 포인트 정보를 조회할 수 있습니다. 잔액이 부족한 경우 '잔고가 부족합니다' 메시지가 표시됩니다.
+      * 잔액 부족 시 결제 버튼을 클릭하면 포인트 충전 페이지로 이동하며, 충전 가능 시 결제가 완료됩니다.
+
+   6. 충전
+![image](https://github.com/miiiingi/DHH/assets/77494780/481b028e-ce07-476f-bdb3-e009351b7bd0)
+      * 충전할 금액을 입력하고 충전하기 버튼을 클릭하면 결제 창이 표시됩니다.
+      * 충전이 완료되면 결제 완료 팝업이 표시되며, 메인 화면으로 돌아갑니다. 충전 중 오류가 발생한 경우 결제 실패 팝업이 표시됩니다.
 
 ## 추가하고 싶은 기능 
+1. 로그아웃 refresh token 삭제
+2. redis cashing
+3. 무중단 배포, nginx, load balancing
+4. 테스트 코드 작성, git action
+5. JMeter 시큐리티 연동 
