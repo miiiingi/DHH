@@ -73,7 +73,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:logout()">로그아웃</a>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/v1/store}">HOME</a>
+                        <a class="nav-link" th:href="@{/v1}">HOME</a>
                     </li>
                 </ul>
             </div>
@@ -88,7 +88,6 @@
         </div>
     </nav>
 </header>
-
 <main class="container">
     <!-- 가게 이름, 내용 -->
     <section class="custom-section">
@@ -149,11 +148,11 @@
             });
         } else {
             // 유저 정보 없으면 login page로 redirect
-            window.location.href = host + '/login';
+            window.location.href = host + '/v1/login';
             return;
         }
     });
-
+  
     function logout() {
         // 토큰 삭제
         Cookies.remove('Authorization', {path: '/'});

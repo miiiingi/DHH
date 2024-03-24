@@ -71,7 +71,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:logout()">로그아웃</a>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/v1/store}">HOME</a>
+                        <a class="nav-link" th:href="@{/v1}">HOME</a>
                     </li>
                 </ul>
             </div>
@@ -183,7 +183,7 @@
     function logout() {
         // 토큰 삭제
         Cookies.remove('Authorization', {path: '/'});
-        window.location.href = host + '/v1/login';
+        window.location.href = host + '/v2/login-page';
     }
 </script>
 

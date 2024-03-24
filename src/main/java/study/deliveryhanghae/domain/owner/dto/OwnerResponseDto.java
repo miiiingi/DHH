@@ -1,12 +1,12 @@
 package study.deliveryhanghae.domain.owner.dto;
 
-import study.deliveryhanghae.domain.order.dto.OrderResponseDto.getOrderDto;
+import study.deliveryhanghae.domain.order.dto.OrderResponseDto;
 
 import java.util.List;
 
 public class OwnerResponseDto {
     public record GetMainDto(
-            List<getOrderDto> orderList,
+            List<OrderResponseDto.GetOrderDto> orderList,
             int ownersPoint
     ){}
 }
