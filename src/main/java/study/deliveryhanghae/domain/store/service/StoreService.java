@@ -87,6 +87,7 @@ public class StoreService {
         s3Service.delete(s3FileName);
         s3Service.upload(file, s3FileName);
         Owner ownerDB = ownerRepository.getReferenceById(owner.getId());
+
         ownerDB.hasStore();
         storeRepository.save(requestDto.toEntity(ownerDB, s3UrlText, file.getOriginalFilename()));
     }
@@ -193,7 +194,9 @@ public class StoreService {
                     )
             );
         }
+
         return new GetStoreDto(menuLists, store.getName(), store.getImageUrl(), store.getDescription());
+
     }
 
 

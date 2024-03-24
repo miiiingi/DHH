@@ -42,7 +42,9 @@ public class MenuService {
     @Transactional
     public void createMenu(CreateMenuDto requestDto, Owner owner) throws IOException {
         // owner 정보에서 가게 정보 뽑기
+
         Store store = storeRepository.findByOwner(owner);
+
         MultipartFile file = requestDto.menuImg();
         String originFileName = file.getOriginalFilename(); // img 원본 이름
         String s3FileName = UUID.randomUUID() + originFileName;
