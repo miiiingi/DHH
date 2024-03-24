@@ -31,7 +31,7 @@ public class WebSecurityConfig {
             "/v2/signup",
             "/signup",
             "/mailSend",
-            "/actuator",
+            "/actuator/**",
             "/error",
             "/v1/**",
             "/logout"
