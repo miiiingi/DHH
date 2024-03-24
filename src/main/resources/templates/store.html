@@ -76,7 +76,7 @@
                 </ul>
             </div>
             <form class="d-flex" role="search"  th:action="@{/v1/search}" method="get">
-                <input class="form-control custom-search-input" type="search" placeholder="먹고싶은 음식을 검색해 보세요" aria-label="Search">
+                <input class="form-control custom-search-input" type="search" name="searchMenu" placeholder="먹고싶은 음식을 검색해 보세요" aria-label="Search">
                 <button class="btn btn-light" type="submit">검색</button>
             </form>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -129,7 +129,7 @@
                 </div>
 
                 <div class="col-auto d-none d-lg-block">
-                    <img th:src="@{${menu.menuUrl}}" alt="가게이미지" class="bd-placeholder-img" width="200" height="250">
+                    <img th:src="@{${menu.menuUrl}}" alt="메뉴이미지" class="bd-placeholder-img" width="200" height="250">
                 </div>
             </div>
         </div>
@@ -156,7 +156,7 @@
             });
         } else {
             // 유저 정보 없으면 login page로 redirect
-            window.location.href = host + '/login-page';
+            window.location.href = host + '/login';
             return;
         }
     });
@@ -180,7 +180,12 @@
         }
     }
 
-
+    function logout() {
+        // 로그아웃 하고 redirect 페이지 사장님 로그인 페이지로 이동해야함
+        // 토큰 삭제
+        Cookies.remove('Authorization', {path: '/'});
+        window.location.href = host + '/v1/login';
+    }
 </script>
 
 
