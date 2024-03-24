@@ -2,7 +2,6 @@ package study.deliveryhanghae.global.config.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +59,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String refreshToken = jwtTokenProvider.createRefreshToken();
         tokenService.setRefreshToken(refreshToken, email);
 
+        log.info("accessToken / refreshToken : " + accessToken +" / "+ refreshToken);
+
+//        jwtTokenProvider.addJwtToCookie(accessToken, response);
         response.addHeader(JwtTokenProvider.AUTHORIZATION_HEADER, accessToken);
+        response.addHeader(JwtTokenProvider.REFRESH_TOKEN, refreshToken);
     }
 
     @Override

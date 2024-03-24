@@ -1,6 +1,7 @@
 package study.deliveryhanghae.global.config.security.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,14 +17,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import study.deliveryhanghae.global.config.security.UserDetailsServiceImpl;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j(topic = "JWT 검증 및 인가")
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public JwtFilter(JwtTokenProvider jwtTokenProvider, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthorizationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsServiceImpl userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
     }
@@ -31,18 +33,22 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
-        String tokenValue = jwtTokenProvider.getTokenFromRequest(req);
+        String accessToken = jwtTokenProvider.getAccessTokenFromRequest(req);
 
-        if (StringUtils.hasText(tokenValue)) {
+        log.info("accessToken : " + accessToken);
+
+        if (StringUtils.hasText(accessToken)) {
             // JWT 토큰 substring
-            tokenValue = jwtTokenProvider.resolveToken(tokenValue);
+            accessToken = jwtTokenProvider.resolveToken(accessToken);
 
-            if (!jwtTokenProvider.validateToken(tokenValue)) {
+            Claims info = jwtTokenProvider.getUserInfoFromToken(accessToken);
+
+            log.info("info : " + info);
+
+            if (!jwtTokenProvider.validateToken(accessToken, info.getSubject(), res)) {
                 log.error("Token Error");
                 return;
             }
-
-            Claims info = jwtTokenProvider.getUserInfoFromToken(tokenValue);
 
             try {
                 setAuthentication(info.getSubject());
@@ -59,6 +65,7 @@ public class JwtFilter extends OncePerRequestFilter {
     public void setAuthentication(String username) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = createUserAuthentication(username);
+        log.info("authentication : " + authentication);
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
     }

@@ -2,6 +2,8 @@ package study.deliveryhanghae.global.config.security.jwt;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import study.deliveryhanghae.global.handler.exception.BusinessException;
+import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
 import java.time.Duration;
 
@@ -15,9 +17,19 @@ public class TokenService {
         this.redisTemplate = redisTemplate;
     }
 
-    public void setRefreshToken(String refreshToken, String username) {
+    public void setRefreshToken(String refreshToken, String email) {
         // Refresh 토큰을 Redis에 저장
-        redisTemplate.opsForValue().set(refreshToken, username, Duration.ofDays(3)); // 3일간 유효
+        redisTemplate.opsForValue().set(refreshToken, email, Duration.ofDays(3)); // 3일간 유효
+    }
+
+    public String getRefreshToken(String accessToken) {
+        return String.valueOf(redisTemplate.opsForValue().get(accessToken));
+    }
+
+    public void verifiedRefreshToken(String refreshToken) {
+        if (refreshToken == null) {
+            throw new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_EXISTS);
+        }
     }
 
     public void deleteRefreshToken(String refreshToken) {
