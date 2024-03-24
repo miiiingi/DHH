@@ -1,9 +1,5 @@
 package study.deliveryhanghae.domain.order.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import study.deliveryhanghae.domain.order.entity.Order;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -20,12 +16,19 @@ public class OrderResponseDto {
     ) {
 
     }
-    public record getOrderDto(
+    public record GetOrderDto(
             Long orderId,
             String orderStatus,
-            @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-            LocalDateTime createdAt,
+            String createdAt,
             String menuName
     ){
+        public GetOrderDto(Long orderId, String orderStatus, LocalDateTime createdAt, String menuName) {
+            this(orderId, orderStatus, formatDateTime(createdAt), menuName);
+        }
+        private static String formatDateTime(LocalDateTime dateTime) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            return dateTime.format(formatter);
+        }
+
     }
 }

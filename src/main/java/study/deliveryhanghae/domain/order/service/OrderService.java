@@ -7,17 +7,15 @@ import org.springframework.transaction.annotation.Transactional;
 import study.deliveryhanghae.domain.menu.entity.Menu;
 import study.deliveryhanghae.domain.menu.repository.MenuRepository;
 import study.deliveryhanghae.domain.order.dto.OrderRequestDto.PayDto;
+import study.deliveryhanghae.domain.order.dto.OrderResponseDto.GetOrderDto;
 import study.deliveryhanghae.domain.order.dto.OrderResponseDto.OrderDto;
-import study.deliveryhanghae.domain.order.dto.OrderResponseDto.getOrderDto;
 import study.deliveryhanghae.domain.order.entity.Order;
 import study.deliveryhanghae.domain.order.entity.OrderStatusEnum;
 import study.deliveryhanghae.domain.order.repository.OrderRepository;
-import study.deliveryhanghae.domain.owner.dto.OwnerResponseDto;
 import study.deliveryhanghae.domain.owner.dto.OwnerResponseDto.GetMainDto;
 import study.deliveryhanghae.domain.owner.entity.Owner;
 import study.deliveryhanghae.domain.owner.repository.OwnerRepository;
 import study.deliveryhanghae.domain.store.entity.Store;
-import study.deliveryhanghae.domain.store.repository.StoreRepository;
 import study.deliveryhanghae.domain.user.entity.User;
 import study.deliveryhanghae.domain.user.repository.UserRepository;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
@@ -25,11 +23,9 @@ import study.deliveryhanghae.global.handler.exception.ErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static study.deliveryhanghae.global.handler.exception.ErrorCode.ENTITY_NOT_FOUND;
 
-;
 
 @Service
 @RequiredArgsConstructor
@@ -111,10 +107,10 @@ public class OrderService {
 
         List<Order> orders = orderRepository.findAllWithMenuByOwner(owner);
 
-        List<getOrderDto> orderList = new ArrayList<>();
+        List<GetOrderDto> orderList = new ArrayList<>();
         for (Order order : orders) {
             orderList.add(
-                    new getOrderDto(
+                    new GetOrderDto(
                             order.getId(),
                             order.getOrderStatus().getStatus(),
                             order.getCreateAt(),

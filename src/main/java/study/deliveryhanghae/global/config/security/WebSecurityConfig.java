@@ -31,10 +31,12 @@ public class WebSecurityConfig {
                                 "/v2/signup",
                                 "/signup",
                                 "/mailSend",
+                                "/actuator/**",
                                 "/error",
                                 "/v1/**",
                                 "/logout"
                             };
+
 
     private static final String[] SWAGGER_URL_ARRAY = {
                                 /* swagger v2 */

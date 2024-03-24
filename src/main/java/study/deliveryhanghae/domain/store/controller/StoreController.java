@@ -16,6 +16,7 @@ import study.deliveryhanghae.domain.store.dto.StoreRequestDto.UpdateStoreDto;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.GetStoreDto;
 import study.deliveryhanghae.domain.store.dto.StoreResponseDto.StoreListDto;
 import study.deliveryhanghae.domain.store.service.StoreService;
+import study.deliveryhanghae.global.aop.Timer;
 import study.deliveryhanghae.global.config.security.owner.OwnerDetailsImpl;
 import study.deliveryhanghae.global.config.security.user.UserDetailsImpl;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
@@ -31,8 +32,8 @@ import java.util.List;
 public class StoreController {
 
     private final StoreService storeService;
-
     //유저 메인페이지
+    @Timer
     @Operation(summary = "메인페이지", description = "메인 페이지에 들어갈 가게 리스트를 조회합니다.")
     @GetMapping("/v1")
     public String getMainPage(Model model) {
@@ -42,6 +43,7 @@ public class StoreController {
     }
 
     // 메인 페이지 검색 기능
+
     @Operation(summary = "검색 기능", description = "메인 페이지에서 찾고 싶은 메뉴로 가게를 검색합니다.")
     @GetMapping("/v1/search")
     public String getSearchStore(
@@ -56,6 +58,7 @@ public class StoreController {
     }
 
     // 선택한 상점 들어가기
+    @Timer
     @Operation(summary = "가게 조회", description = "메인 페이지에서 가게 선택시 선택한 가게의 상세페이지로 이동합니다.")
     @GetMapping("/v1/{storeId}")
     public String getStore(@PathVariable Long storeId, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -77,6 +80,7 @@ public class StoreController {
     /***
      * 여기서 부터 사장님 페이지 입니다
      */
+
     @Operation(summary = "가게 등록", description = "가게 등록시 필요한 정보를 입력한 뒤 메인페이지로 이동합니다.")
     @PostMapping("/v2/store")
     public String createOwnerStore(@AuthenticationPrincipal OwnerDetailsImpl userDetails,
@@ -93,6 +97,7 @@ public class StoreController {
         }
         return "redirect:/v2";
     }
+
 
     @Operation(summary = "가게 조회", description = "가게 상세페이지에 들어갈 가게 이름과 메뉴 리스트를 조회합니다.")
     @GetMapping("/v2/store")
