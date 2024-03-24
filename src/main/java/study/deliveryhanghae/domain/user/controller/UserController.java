@@ -72,10 +72,10 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public String logoutUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @ResponseBody
+    public void logoutUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         // Refresh 토큰을 Redis에서 삭제
         tokenService.deleteRefreshToken(userDetails.getUser().getEmail());
-        return "redirect:/v1/login";
     }
 
 }

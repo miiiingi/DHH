@@ -89,13 +89,6 @@
         }
         return auth;
     }
-
-    function logout() {
-        // 로그아웃 하고 redirect 페이지 사장님 로그인 페이지로 이동해야함
-        // 토큰 삭제
-        Cookies.remove('Authorization', {path: '/'});
-        window.location.href = host + '/v2/login-page';
-    }
 </script>
 
 </body>

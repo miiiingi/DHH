@@ -69,7 +69,7 @@
             <a th:href="@{/v2/store}" class="navbar-brand d-flex align-items-center">
                 <img th:src="@{/images/logo.png}" width="200em" height="auto" alt="">
             </a>
-            <a class="btn" href="javascript:logout()">로그아웃</a>
+            <a class="btn" onclick="logout()">로그아웃</a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -426,22 +426,10 @@
     }
 
     function logout() {
-        // AccessToken 삭제
+        // 로그아웃 하고 redirect 페이지 사장님 로그인 페이지로 이동해야함
+        // 토큰 삭제
         Cookies.remove('Authorization', {path: '/'});
-        // AJAX를 사용하여 로그아웃 요청을 서버에 보냄
-        $.ajax({
-            type: "POST",
-            url: "/logout",
-            contentType: "application/json",
-            success: function() {
-                // 서버에서 로그아웃 처리 후 리디렉션
-                window.location.href = host + '/v2/login-page';
-            },
-            error: function(xhr, status, error) {
-                console.error(error);
-                // 에러 처리
-            }
-        });
+        window.location.href = host + '/v2/login-page';
     }
 </script>
 
