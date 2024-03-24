@@ -80,10 +80,9 @@ public class UserController {
 
     @Operation(summary = "로그아웃", description = "로그아웃하고 토큰을 지웁니다.")
     @PostMapping("/logout")
-    public String logoutUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public void logoutUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         // Refresh 토큰을 Redis에서 삭제
         tokenService.deleteRefreshToken(userDetails.getUser().getEmail());
-        return "redirect:/v1/login";
     }
 
 }

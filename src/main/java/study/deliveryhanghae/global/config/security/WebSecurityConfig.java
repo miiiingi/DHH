@@ -36,7 +36,6 @@ public class WebSecurityConfig {
                                 "/logout"
                             };
 
-
     private static final String[] SWAGGER_URL_ARRAY = {
                                 /* swagger v2 */
                                 "/v2/api-docs",
