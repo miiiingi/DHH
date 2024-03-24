@@ -33,20 +33,7 @@
         function logout() {
             // AccessToken 삭제
             Cookies.remove('Authorization', {path: '/'});
-            // AJAX를 사용하여 로그아웃 요청을 서버에 보냄
-            $.ajax({
-                type: "POST",
-                url: "/logout",
-                contentType: "application/json",
-                success: function() {
-                    // 서버에서 로그아웃 처리 후 리디렉션
-                    window.location.href = host + '/v2/login-page';
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                    // 에러 처리
-                }
-            });
+            window.location.href = host + '/v1/login';
         }
 
         function requestPay() {
@@ -153,7 +140,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:logout()">로그아웃</a>
+                        <a class="nav-link" onclick="logout()">로그아웃</a>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/v1}">HOME</a>
                     </li>
