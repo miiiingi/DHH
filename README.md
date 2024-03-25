@@ -167,4 +167,4 @@ iamport.impKey=
 4. 테스트 코드 작성, git action
 5. JMeter 시큐리티 연동 
 
-https://files.slack.com/files-pri/T01L2TNGW3T-F06RGG16WN5/screenshot_2024-03-25_at_2.39.45___pm.png
+![Screenshot 2024-03-25 at 2 39 45 PM](https://github.com/miiiingi/DHH/assets/77494780/47063965-6371-4c85-a6f6-0b464d176bca)
