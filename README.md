@@ -166,3 +166,5 @@ iamport.impKey=
 3. 무중단 배포, nginx, load balancing
 4. 테스트 코드 작성, git action
 5. JMeter 시큐리티 연동 
+
+https://files.slack.com/files-pri/T01L2TNGW3T-F06RGG16WN5/screenshot_2024-03-25_at_2.39.45___pm.png
