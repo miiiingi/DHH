@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deliever_Hang_Hae</title>
+    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <script>
+
+
+        var IMP = window.IMP;
+        var impKey = "[[${impKey}]]";
+        IMP.init(impKey);
+
+        var paymentAmount = document.getElementById('paymentAmount').value;
+
+        // 충전 금액이 입력되지 않았을 경우
+        if (!paymentAmount) {
+            alert("충전 금액을 입력해주세요.");
+            history.back();
+        }
+
+        function logout() {
+            // AccessToken 삭제
+            Cookies.remove('Authorization', {path: '/'});
+            window.location.href = host + '/v1/login';
+        }
+
+        function requestPay() {
+            var chargeUid = '[[${chargeDto.chargeUid}]]'; // 변경된 부분
+            var chargeName = '[[${chargeDto.chargeName}]]'; // 변경된 부분
+            var paymentPrice = document.getElementById('paymentAmount').value;
+            var buyerName = '[[${chargeDto.user.nickname}]]'; // 변경된 부분
+            var buyerEmail = '[[${chargeDto.user.email}]]'; // 변경된 부분
+            var buyerAddress = '[[${chargeDto.user.address}]]'; // 변경된 부분
+
+            IMP.request_pay({
+                    pg : 'html5_inicis.INIpayTest',
+                    pay_method : 'card',
+                    merchant_uid: chargeUid, // 주문 번호
+                    name : chargeName, // 상품 이름
+                    amount : paymentPrice, // 상품 가격
+                    buyer_email : buyerEmail, // 구매자 이메일
+                    buyer_name : buyerName, // 구매자 이름
+                    buyer_tel : '010-1234-5678', // 임의의 값
+                    buyer_addr : buyerAddress, // 구매자 주소
+                    buyer_postcode : '123-456', // 임의의 값
+                },
+                function(rsp) {
+                    if (rsp.success) {
+                        //alert('call back!!: ' + JSON.stringify(rsp));
+                        // 결제 성공 시: 결제 승인 또는 가상계좌 발급에 성공한 경우
+                        // jQuery로 HTTP 요청
+                        jQuery.ajax({
+                            url: "/v2/charge",
+                            method: "POST",
+                            headers: {"Content-Type": "application/json"},
+                            data: JSON.stringify({
+                                "amount": paymentPrice,      // 결제 고유번호
+                                "charge_uid": rsp.merchant_uid   // 주문번호
+                            })
+                        }).done(function (response) {
+                            console.log(response);
+                            // 가맹점 서버 결제 API 성공시 로직
+                            //alert('Please, Check your payment result page!!' + rsp);
+                            alert('결제 완료!');
+                            window.location.href = "/v1";
+                        })
+                    } else {
+                        alert("success? "+ rsp.success+ ", 결제에 실패하였습니다. 에러 내용: " + JSON.stringify(rsp));
+                        alert('결제 실패!');
+                    }
+                });
+        }
+
+    </script>
+</head>
+<style>
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    html,
+    body {
+        height: 100%;
+    }
+
+    .form-charge {
+        max-width: 330px;
+        padding: 1rem;
+    }
+
+    .form-charge .form-floating:focus-within {
+        z-index: 2;
+    }
+
+    .custom-search-input {
+        width: 300px;
+        /* Adjust the width as needed */
+        height: 40px;
+        /* Adjust the height as needed */
+        margin-right: 10PX;
+    }
+
+
+</style>
+
+
+<body>
+
+<!-- 헤더 네비게이션 영역 -->
+<header data-bs-theme="dark">
+    <!-- nav -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container">
+            <a th:href="@{/v1}" class="navbar-brand d-flex align-items-center">
+                <img th:src="@{/images/logo.png}" width="200em" height="auto" alt="">
+            </a>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="logout()">로그아웃</a>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/v1}">HOME</a>
+                    </li>
+                </ul>
+            </div>
+            <form class="d-flex" role="search"  th:action="@{/v1/search}" method="get">
+                <input class="form-control custom-search-input" type="search" name="searchMenu" placeholder="먹고싶은 음식을 검색해 보세요" aria-label="Search">
+                <button class="btn btn-light" type="submit">검색</button>
+            </form>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main class="form-charge w-100 m-auto">
+
+    <div id="charge">
+        <div class="content">
+            <div class="header text-center">
+                <h1 class="title fs-1 fw-bold">포인트 충전</h1>
+
+            </div>
+            <div class="body">
+                <div class="mb-3">
+                    <label for="paymentAmount" class="col-form-label">충전 금액</label>
+                    <input type="number" class="form-control" id="paymentAmount" placeholder="충전 금액을 입력하세요">
+                </div>
+                <!-- 회원 가입 버튼 -->
+                <button class="btn btn-primary" th:with="chargeDto = ${chargeDto}" onclick="requestPay()">충전 하기</button>
+
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+
+</html>

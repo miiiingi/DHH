@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deliever_Hang_Hae</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<!-- header -->
+<header class="header">
+    <!-- <h1 class="logo">Brand</h1> -->
+    <div class="header-left">
+        <a th:href="@{/v1}">
+        <img th:src="@{/images/logo.png}" class="logo" />
+        </a>
+    </div>
+    <div class="header-center" >
+        <form class="input-form" th:action="@{/v1/search}" method="get">
+            <input
+                    class="input"
+                    type="search"
+                    name="searchMenu"
+                    placeholder="먹고싶은 음식을 검색해 보세요"
+            />
+            <button type="submit" class="input-button">검색</button>
+        </form>
+    </div>
+    <div class="header-right">
+        <nav class="menu">
+            <a th:href="@{/v1}" class="menu-button" id="home-btn">HOME</a>
+            <a th:href="@{/v1/login}" class="menu-button" id="login-btn">LOGIN</a>
+            <a th:href="@{/v2/charge}" class="menu-button" id="pay-btn">PAY</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="main-background">
+        <div class="store-list">
+            <!-- Iterate over your list of stores -->
+            <div class="store-list">
+                <!-- Iterate over your list of stores -->
+                <div th:each="store : ${stores}" class="store-item">
+                    <div class="store-card">
+                        <div class="store-image-container">
+                            <!-- Store image -->
+                            <!-- 사진, 가게 이름 클릭시 해당 가게 상세 페이지로 연결 -->
+                            <a th:href="@{'/v1/' + ${store.id}}" class="store-link">
+                                <img th:src="@{${store.imageUrl}}" alt="store img" class="store-image">
+                            </a>
+                        </div>
+                        <!-- Store name -->
+                        <a th:href="@{'/v1/' + ${store.id}}" class="store-link">
+                            <p class="store-name" th:text="${store.name}">Store Name</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+</main>
+
+<script>
+    const host = 'http://' + window.location.host;
+
+    $(document).ready(function () {
+        const auth = getToken();
+        if (auth) {
+
+            $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                jqXHR.setRequestHeader('Authorization', auth);
+            });
+        } else {
+
+            // 유저 정보 없으면 login page로 redirect
+            window.location.href = host + '/login';
+            return;
+        }
+    });
+
+
+    function getToken() {
+        let auth = Cookies.get('Authorization');
+        console.log(auth);
+        if (auth === undefined) {
+            return '';
+        }
+        return auth;
+    }
+</script>
+
+</body>
+</html>
