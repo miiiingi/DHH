@@ -3,15 +3,20 @@
 ### User : http://49.50.161.142:8080/v1
 ### Owner : http://49.50.161.142:8080/v2/login-page
 
+### 노션 : https://www.notion.so/ramizzang/b13c7d2c88274489b6bfa877cd6d1d65
+### 그라운드 룰 : https://www.notion.so/ramizzang/eb1b5203b0e84217beb43f1665d4e807
+### Git 전략 : https://www.notion.so/ramizzang/Git-5d5d7e547bf941c0b2d2cc17930843eb
+
 ## 목차
 1. [팀원](#팀원)
 2. [요구사항](#요구사항)
 3. [Flow Chart](#Flow-Chart)
 4. [ERD](#ERD)
 5. [API 설계](#API-설계)
-6. [프로젝트 실행 방법](#프로젝트-실행-방법)
-7. [프로그램 실행 예시](#프로그램-실행-예시)
-8. [추가하고 싶은 기능](#추가하고-싶은-기능)
+6. [기술 Map](#기술-Map)
+7. [프로젝트 실행 방법](#프로젝트-실행-방법)
+8. [프로그램 실행 예시](#프로그램-실행-예시)
+9. [추가하고 싶은 기능](#추가하고-싶은-기능)
 
 ## 팀원
 * 김민기 https://github.com/miiiingi/DHH
@@ -40,11 +45,17 @@
    * 주문시 잔여 포인트보다 메뉴 가격이 비싸면 포인트 충전 페이지로 이동한다.
 
 ## Flow Chart
+![image](https://github.com/miiiingi/DHH/assets/77494780/ffddf763-d137-45d7-9995-27190928b10b)
+![image](https://github.com/miiiingi/DHH/assets/77494780/87a9b16c-51c2-4295-8f79-bfcf47fa4ef5)
 
 ## ERD
+![image](https://github.com/miiiingi/DHH/assets/77494780/df297f38-f50a-40ce-8d02-6169e9933dab)
 
 ## API 설계
 http://49.50.161.142:8080/swagger-ui/index.html
+
+## 기술 Map
+![image](https://github.com/miiiingi/DHH/assets/77494780/705feba8-6c57-42e7-99ae-923b0f89351d)
 
 ## 프로젝트 실행 방법
 1. 해당 프로젝트를 zip파일로 다운로드한다.
@@ -93,7 +104,7 @@ iamport.impKey=
 ```
 
 
-## 프로그램 실행 예시
+## 프로그램 실행 예시 : https://youtu.be/ZRGbnZgXghE?si=K7UaNbnMbiT0zG7r 
 * 사장님
   1. 회원가입 
 ![image](https://github.com/miiiingi/DHH/assets/77494780/7c0e5393-24bd-4cf9-8907-3640877ff010)
