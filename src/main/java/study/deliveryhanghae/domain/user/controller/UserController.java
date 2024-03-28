@@ -1,9 +1,8 @@
 package study.deliveryhanghae.domain.user.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,15 +10,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import study.deliveryhanghae.domain.user.dto.UserRequestDto;
 import study.deliveryhanghae.domain.user.dto.UserRequestDto.SignupRequestRecord;
 import study.deliveryhanghae.domain.user.service.UserService;
 import study.deliveryhanghae.global.config.security.jwt.TokenService;
 import study.deliveryhanghae.global.config.security.user.UserDetailsImpl;
 import study.deliveryhanghae.global.handler.exception.BusinessException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @Slf4j(topic = "회원가입, 로그인")
@@ -56,7 +57,7 @@ public class UserController {
 
     @Operation(summary = "로그인", description = "로그인 시 필요한 정보를 입력합니다.")
     @PostMapping("/login")
-    public void login(UserRequestDto.LoginRequestRecord requestDto) {
+    public void login(@RequestBody UserRequestDto.LoginRequestRecord requestDto) {
     }
 
 
